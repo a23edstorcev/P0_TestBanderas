@@ -30,7 +30,7 @@
   };
 
   function fetchPreguntas(n) {
-    fetch(`/back/getPreguntas.php?action=getPreguntas&n=${n}`)
+    fetch(`/M07/AEA1.1_Actividad3/back/getPreguntas.php?action=getPreguntas&n=${n}`)
       .then(res => res.json())
       .then(data => {
         preguntas = data;
@@ -70,7 +70,7 @@
 
   function mostrarResultados() {
     container.innerHTML = `<h2>Calculando resultados...</h2>`;
-    fetch('/back/getPreguntas.php?action=finalitza', {
+    fetch('/M07/AEA1.1_Actividad3/back/getPreguntas.php?action=finalitza', {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify({ respuestas })

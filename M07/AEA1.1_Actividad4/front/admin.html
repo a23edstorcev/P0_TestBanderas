@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<title>Admin Panel - CRUD Preguntas</title>
+<style>
+  body { font-family: Arial, sans-serif; max-width: 1000px; margin: 2rem auto; padding: 20px; }
+  button { margin: 5px; padding: 8px 15px; cursor: pointer; }
+  .btn-primary { background: #007bff; color: white; border: none; border-radius: 4px; }
+  .btn-success { background: #28a745; color: white; border: none; border-radius: 4px; }
+  .btn-danger { background: #dc3545; color: white; border: none; border-radius: 4px; }
+  .btn-warning { background: #ffc107; color: black; border: none; border-radius: 4px; }
+  input[type="text"], textarea, select { 
+    width: 100%; padding: 8px; margin-bottom: 10px; border: 1px solid #ddd; border-radius: 4px; 
+  }
+  textarea { height: 60px; resize: vertical; }
+  table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+  th, td { padding: 10px; text-align: left; border-bottom: 1px solid #ddd; }
+  th { background-color: #f8f9fa; }
+  .form-container { background: #f8f9fa; padding: 20px; border-radius: 8px; margin-bottom: 20px; }
+  .message { padding: 10px; margin: 10px 0; border-radius: 4px; }
+  .success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+  .error { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+  .answers-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+</style>
+</head>
+<body>
+
+<h1>Panel de Administración - Preguntas Quiz</h1>
+
+<div id="admin-container">
+  <div class="form-container">
+    <h3 id="form-title">Crear Nueva Pregunta</h3>
+    <input type="hidden" id="id" value="">
+    
+    <textarea id="question" placeholder="Escribe la pregunta aquí"></textarea>
+    
+    <div class="answers-grid">
+      <input type="text" id="answer_1" placeholder="Respuesta 1">
+      <input type="text" id="answer_2" placeholder="Respuesta 2">
+      <input type="text" id="answer_3" placeholder="Respuesta 3">
+      <input type="text" id="answer_4" placeholder="Respuesta 4">
+    </div>
+    
+    <select id="correct_answer">
+      <option value="1">Respuesta 1 es correcta</option>
+      <option value="2">Respuesta 2 es correcta</option>
+      <option value="3">Respuesta 3 es correcta</option>
+      <option value="4">Respuesta 4 es correcta</option>
+    </select>
+    
+    <button id="save-btn" class="btn-primary">Guardar Pregunta</button>
+    <button id="cancel-btn" class="btn-warning" style="display:none;">Cancelar</button>
+  </div>
+
+  <div id="questions-container">
+    <h3>Lista de Preguntas</h3>
+    <button id="refresh-btn" class="btn-success">Actualizar Lista</button>
+    <div id="questions-list"></div>
+  </div>
+</div>
+
+<script>
+  const container = document.getElementById('admin-container');
+  const saveBtn = document.getElementById('save-btn');
+  const cancelBtn = document.getElementById('cancel-btn');
+  const refreshBtn = document.getElementById('refresh-btn');
+  const formTitle = document.getElementById('form-title');
+  const questionsList = document.getElementById('questions-list');
+  
+  let preguntas = [];
+  let editMode = false;
+
+  // Cargar preguntas al inicio
+  loadQuestions();
+
+  saveBtn.onclick = () => {
+    const id = document.getElementById('id').value;
+    const question = document.getElementById('question').value.trim();
+    const answer_1 = document.getElementById('answer_1').value.trim();
+    const answer_2 = document.getElementById('answer_2').value.trim();
+    const answer_3 = document.getElementById('answer_3').value.trim();
+    const answer_4 = document.getElementById('answer_4').value.trim();
+    const correct_answer = parseInt(document.getElementById('correct_answer').value);
+
+    if (!question || !answer_1 || !answer_2 || !answer_3 || !answer_4) {
+      showMessage('Todos los campos son obligatorios', 'error');
+      return;
+    }
+
+    if (editMode) {
+      updateQuestion(id, question, answer_1, answer_2, answer_3, answer_4, correct_answer);
+    } else {
+      createQuestion(question, answer_1, answer_2, answer_3, answer_4, correct_answer);
+    }
+  };
+
+  cancelBtn.onclick = () => {
+    resetForm();
+  };
+
+  refreshBtn.onclick = () => {
+    loadQuestions();
+  };
+
+  function createQuestion(question, answer_1, answer_2, answer_3, answer_4, correct_answer) {
+    fetch('/M07/AEA1.1_Actividad4/back/getPreguntas.php?action=create', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({ question, answer_1, answer_2, answer_3, answer_4, correct_answer })
+    })
+    .then(res => res.json())
+    .then(data => {
+      if (data.success) {
+        showMessage(data.message, 'success');
+        resetForm();
+        loadQuestions();
+      } else {
+        showMessage(data.message, 'error');
+      }
+    })
+    .catch(e => {
+      showMessage('Error al crear pregunta: ' + e.message, 'error');
+    });
+  }
+
+  function loadQuestions() {
+    fetch('/M07/AEA1.1_Actividad4/back/getPreguntas.php?action=read')
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          preguntas = data.data;
+          displayQuestions();
+        } else {
+          showMessage('Error al cargar preguntas: ' + data.message, 'error');
+        }
+      })
+      .catch(e => {
+        showMessage('Error cargando preguntas: ' + e.message, 'error');
+      });
+  }
+
+  function displayQuestions() {
+    if (preguntas.length === 0) {
+      questionsList.innerHTML = '<p>No hay preguntas registradas</p>';
+      return;
+    }
+
+    let html = `<table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Pregunta</th>
+          <th>Respuestas</th>
+          <th>Correcta</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>`;
+
+    preguntas.forEach(q => {
+      const answers = `1: ${q.answer_1}<br>2: ${q.answer_2}<br>3: ${q.answer_3}<br>4: ${q.answer_4}`;
+      html += `
+        <tr>
+          <td>${q.id}</td>
+          <td>${q.question.substring(0, 50)}${q.question.length > 50 ? '...' : ''}</td>
+          <td style="font-size: 12px;">${answers}</td>
+          <td>${q.correct_answer}</td>
+          <td>
+            <button class="btn-warning" onclick="editQuestion(${q.id})">Editar</button>
+            <button class="btn-danger" onclick="deleteQuestion(${q.id})">Eliminar</button>
+          </td>
+        </tr>`;
+    });
+
+    html += '</tbody></table>';
+    questionsList.innerHTML = html;
+  }
+
+  function editQuestion(id) {
+    const question = preguntas.find(q => q.id == id);
+    if (!question) return;
+    document.getElementById('id').value = question.id;
+    document.getElementById('question').value = question.question;
+    document.getElementById('answer_1').value = question.answer_1;
+    document.getElementById('answer_2').value = question.answer_2;
+    document.getElementById('answer_3').value = question.answer_3;
+    document.getElementById('answer_4').value = question.answer_4;
+    document.getElementById('correct_answer').value = question.correct_answer;
+
+    formTitle.textContent = 'Editar Pregunta';
+    saveBtn.textContent = 'Actualizar Pregunta';
+    cancelBtn.style.display = 'inline-block';
+    editMode = true;
+  }
+
+  function updateQuestion(id, question, answer_1, answer_2, answer_3, answer_4, correct_answer) {
+    fetch('/M07/AEA1.1_Actividad4/back/getPreguntas.php?action=update', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({ id, question, answer_1, answer_2, answer_3, answer_4, correct_answer })
+    })
+    .then(res => res.json())
+    .then(data => {
+      if (data.success) {
+        showMessage(data.message, 'success');
+        resetForm();
+        loadQuestions();
+      } else {
+        showMessage(data.message, 'error');
+      }
+    })
+    .catch(e => {
+      showMessage('Error al actualizar pregunta: ' + e.message, 'error');
+    });
+  }
+
+  function deleteQuestion(id) {
+    if (!confirm('¿Estás seguro de eliminar esta pregunta?')) {
+      return;
+    }
+
+    fetch('/M07/AEA1.1_Actividad4/back/getPreguntas.php?action=delete', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({ id })
+    })
+    .then(res => res.json())
+    .then(data => {
+      if (data.success) {
+        showMessage(data.message, 'success');
+        loadQuestions();
+      } else {
+        showMessage(data.message, 'error');
+      }
+    })
+    .catch(e => {
+      showMessage('Error al eliminar pregunta: ' + e.message, 'error');
+    });
+  }
+
+  function resetForm() {
+    document.getElementById('question').value = '';
+    document.getElementById('answer_1').value = '';
+    document.getElementById('answer_2').value = '';
+    document.getElementById('answer_3').value = '';
+    document.getElementById('answer_4').value = '';
+    document.getElementById('correct_answer').value = '1';
+    
+    formTitle.textContent = 'Crear Nueva Pregunta';
+    saveBtn.textContent = 'Guardar Pregunta';
+    cancelBtn.style.display = 'none';
+    editMode = false;
+  }
+
+  function showMessage(message, type) {
+    const existingMessage = document.querySelector('.message');
+    if (existingMessage) {
+      existingMessage.remove();
+    }
+
+    const messageDiv = document.createElement('div');
+    messageDiv.className = `message ${type}`;
+    messageDiv.textContent = message;
+    
+    container.insertBefore(messageDiv, container.firstChild);
+    
+    setTimeout(() => {
+      messageDiv.remove();
+    }, 5000);
+  }
+</script>
+
+</body>
+</html>

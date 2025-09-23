@@ -30,12 +30,12 @@
   };
 
   function fetchPreguntas(n) {
-    fetch(`/back/getPreguntas.php?action=getPreguntas&n=${n}`)
+    fetch(`/M07/AEA1.1_Actividad4/back/getPreguntas.php?action=getPreguntas&n=${n}`)
       .then(res => res.json())
       .then(data => {
         preguntas = data;
         indexPregunta = 0;
-        // respuestas = [];
+        respuestas = [];
         mostrarPregunta();
       })
       .catch(e => {
@@ -55,9 +55,10 @@
       <div id="answers"></div>`;
 
     const answersDiv = document.getElementById('answers');
-    p.answers.forEach((ans, i) => {
+    const answerKeys = ['answer_1', 'answer_2', 'answer_3', 'answer_4'];
+    answerKeys.forEach((key, i) => {
       const btn = document.createElement('button');
-      btn.textContent = ans;
+      btn.textContent = p[key];
       btn.classList.add('answer-btn');
       btn.onclick = () => {
         respuestas.push(i);
@@ -66,11 +67,17 @@
       };
       answersDiv.appendChild(btn);
     });
+
+    console.log(respuestas);
+
+
   }
+
+  
 
   function mostrarResultados() {
     container.innerHTML = `<h2>Calculando resultados...</h2>`;
-    fetch('/back/getPreguntas.php?action=finalitza', {
+    fetch('/M07/AEA1.1_Actividad4/back/getPreguntas.php?action=finalitza', {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify({ respuestas })
