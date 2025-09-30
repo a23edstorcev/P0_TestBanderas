@@ -1,0 +1,72 @@
+[
+    {
+      "id": 1,
+      "pregunta": "De quin país és aquesta bandera?",
+      "respostes": ["Itàlia", "Mèxic", "Hongria", "Bulgària"],
+      "resposta_correcta": 0,
+      "imatge": "https://upload.wikimedia.org/wikipedia/en/0/03/Flag_of_Italy.svg"
+    },
+    {
+      "id": 2,
+      "pregunta": "De quin país és aquesta bandera?",
+      "respostes": ["Suècia", "Finlàndia", "Noruega", "Islàndia"],
+      "resposta_correcta": 2,
+      "imatge": "https://upload.wikimedia.org/wikipedia/commons/d/d9/Flag_of_Norway.svg"
+    },
+    {
+      "id": 3,
+      "pregunta": "De quin país és aquesta bandera?",
+      "respostes": ["Japó", "Bangladesh", "Corea del Sud", "Xina"],
+      "resposta_correcta": 0,
+      "imatge": "https://upload.wikimedia.org/wikipedia/en/9/9e/Flag_of_Japan.svg"
+    },
+    {
+      "id": 4,
+      "pregunta": "De quin país és aquesta bandera?",
+      "respostes": ["Brasil", "Argentina", "Colòmbia", "Uruguai"],
+      "resposta_correcta": 0,
+      "imatge": "https://upload.wikimedia.org/wikipedia/en/0/05/Flag_of_Brazil.svg"
+    },
+    {
+      "id": 5,
+      "pregunta": "De quin país és aquesta bandera?",
+      "respostes": ["Canadà", "Estats Units", "Austràlia", "Anglaterra"],
+      "resposta_correcta": 0,
+      "imatge": "https://upload.wikimedia.org/wikipedia/commons/c/cf/Flag_of_Canada.svg"
+    },
+    {
+      "id": 6,
+      "pregunta": "De quin país és aquesta bandera?",
+      "respostes": ["Espanya", "Alemanya", "Bèlgica", "França"],
+      "resposta_correcta": 1,
+      "imatge": "https://upload.wikimedia.org/wikipedia/en/b/ba/Flag_of_Germany.svg"
+    },
+    {
+      "id": 7,
+      "pregunta": "De quin país és aquesta bandera?",
+      "respostes": ["Sud-àfrica", "Kènia", "Ghana", "Etiòpia"],
+      "resposta_correcta": 0,
+      "imatge": "https://upload.wikimedia.org/wikipedia/commons/a/af/Flag_of_South_Africa.svg"
+    },
+    {
+      "id": 8,
+      "pregunta": "De quin país és aquesta bandera?",
+      "respostes": ["Índia", "Nepal", "Pakistan", "Sri Lanka"],
+      "resposta_correcta": 0,
+      "imatge": "https://upload.wikimedia.org/wikipedia/en/4/41/Flag_of_India.svg"
+    },
+    {
+      "id": 9,
+      "pregunta": "De quin país és aquesta bandera?",
+      "respostes": ["Grècia", "Finlàndia", "Uruguai", "Israel"],
+      "resposta_correcta": 0,
+      "imatge": "https://upload.wikimedia.org/wikipedia/commons/5/5c/Flag_of_Greece.svg"
+    },
+    {
+      "id": 10,
+      "pregunta": "De quin país és aquesta bandera?",
+      "respostes": ["Austràlia", "Nova Zelanda", "Regne Unit", "Fiji"],
+      "resposta_correcta": 2,
+      "imatge": "https://upload.wikimedia.org/wikipedia/en/a/ae/Flag_of_the_United_Kingdom.svg"
+    }
+  ]

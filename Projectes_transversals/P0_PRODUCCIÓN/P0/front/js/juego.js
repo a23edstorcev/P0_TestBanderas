@@ -1,14 +1,13 @@
-var tiempo = 30;
+var tiempo = 50;
 let tiempoParaResponder = tiempo; // en segundos
 let temporizadorCorriendo = false;
 let eventListenerAgregado = false;
-let partidaStorage = [];
 
 let interval; // varible global del tempporizador para poder pararlo cuando quiera
 
 let estatDeLaPartida = {
   preguntas: [],
-  respuestasUsuari: Array(10).fill(null), // Aquí anirem guardant les respostes
+  respuestasUsuari: [], // Aquí anirem guardant les respostes
   preguntaActual: 0,
   respuestaSeleccionada: null
 };
@@ -18,7 +17,6 @@ let temporizadorContainer = document.getElementById("temporizador");
 let sesionContainer = document.getElementById("sesion");
 let btnsCambiarPregunta = document.getElementById("btnsCambiarPregunta");
 let botonesOpciones = document.getElementById("botonesOpciones");
-let mensajeUser = document.getElementById("mensajeSesion");
 
 let respuestasTotales = 0;
 let respuestasCorrectas = 0;
@@ -36,63 +34,18 @@ function inicializarEventListeners() {
       estatDeLaPartida.respuestaSeleccionada = respuesta;
       console.log("respuesta seleccionada " + estatDeLaPartida.respuestaSeleccionada);      
       // ✅ DESTACAR el botón clickeado
-      let grupoName = e.target.getAttribute("name");
-      let radios = document.querySelectorAll(`input[name="${grupoName}"]`);
-
-      // 🔹 resetear estilos de todas las opciones de esa pregunta
-      radios.forEach(r => {
-        r.style.backgroundColor = "";
-        r.style.color = "";
-      });
-
-      // 🔹 aplicar estilo solo al seleccionado
-      e.target.style.backgroundColor = "#28a745"; // verde
+      e.target.style.backgroundColor = "#28a745"; // Verde para elegida
       e.target.style.color = "white";
     }
   })
   // listener para el inicio de sesión 
   sesionContainer.addEventListener("click", function (e) {
-    let validName;
     if (e.target && e.target.id === "btnIniciarSesion") {
-      if (!localStorage.getItem("nombreJugador")) {
-        validName = guardarNombre();
-        if (!validName) return;
-        document.getElementById("sesion").setAttribute("hidden", true);
-        document.getElementById("btnsCambiarPregunta").removeAttribute("hidden");
-        PreguntaVisible(estatDeLaPartida.preguntaActual, estatDeLaPartida.preguntaActual);
-      } else {
-        document.getElementById("sesion").setAttribute("hidden", true);
-        document.getElementById("btnsCambiarPregunta").removeAttribute("hidden");
-        document.getElementById("mensajeSesion").removeAttribute("hidden");
-        if (partidaStorage.length !== 0) {
-          console.log("hay partida guardada");
-          estatDeLaPartida = {
-            preguntas: partidaStorage.preguntas,
-            respuestasUsuari: partidaStorage.respuestasUsuari, // Aquí anirem guardant les respostes
-            preguntaActual: partidaStorage.preguntaActual,
-            respuestaSeleccionada: null
-          };
-          bloquearRespuestas()
-        } 
-        console.log("PRUEBA");
-        PreguntaVisible(estatDeLaPartida.preguntaActual, estatDeLaPartida.preguntaActual);
-      }
-        
-      console.log(estatDeLaPartida);
-      iniciarTemporizador();
-    }
-
-    if (e.target && e.target.id === "btnBorrarNombre") {
-      localStorage.clear();
-      document.getElementById("mensajeSesion").setAttribute("hidden", true);
-      document.getElementById("nombreJugador").removeAttribute("hidden");
-      document.getElementById("btnIniciarSesion").removeAttribute("hidden");
-      // validName = guardarNombre();
-      // if (!validName) return;
-      // document.getElementById("sesion").setAttribute("hidden", true);
-      // document.getElementById("btnsCambiarPregunta").removeAttribute("hidden");
-      // PreguntaVisible(estatDeLaPartida.preguntaActual, estatDeLaPartida.preguntaActual);
-      // iniciarTemporizador();
+      let validName = guardarNombre();
+      if (!validName) return;
+      document.getElementById("sesion").setAttribute("hidden", true);
+      document.getElementById("btnsCambiarPregunta").removeAttribute("hidden");
+      PreguntaVisible(estatDeLaPartida.preguntaActual, estatDeLaPartida.preguntaActual);
     }
     // TODO: añadir listener de boton de cerras sesión
   });
@@ -102,32 +55,22 @@ function inicializarEventListeners() {
     if (e.target && e.target.id === "btnAnterior") {
       if (estatDeLaPartida.preguntaActual > 0) {
         estatDeLaPartida.preguntaActual--;
-        if (estatDeLaPartida.respuestaSeleccionada !== null) {
-          renderitzarMarcador(estatDeLaPartida.respuestaSeleccionada);
-        }
         PreguntaVisible(preguntaMostrada, estatDeLaPartida.preguntaActual);
+        renderitzarMarcador(estatDeLaPartida.respuestaSeleccionada);
       }
     } else if (e.target && e.target.id === "btnSiguiente") {
-      if (estatDeLaPartida.preguntaActual < estatDeLaPartida.preguntas.length ) {
-        if (estatDeLaPartida.respuestaSeleccionada !== null) {
-          renderitzarMarcador(estatDeLaPartida.respuestaSeleccionada);
-        }
+      if (estatDeLaPartida.preguntaActual < estatDeLaPartida.preguntas.length - 1) {
         estatDeLaPartida.preguntaActual++;
-        if (estatDeLaPartida.preguntaActual > estatDeLaPartida.preguntas.length-1) {
-          mostrarFinal();
-           
-        } else {
-          PreguntaVisible(preguntaMostrada, estatDeLaPartida.preguntaActual);
-        }
-
+        PreguntaVisible(preguntaMostrada, estatDeLaPartida.preguntaActual);
+        renderitzarMarcador(estatDeLaPartida.respuestaSeleccionada);
       }
     }
   });
     
 
   // listener para el boton de volver a comenzar
-  botonesOpciones.addEventListener("click", (event) => {
-    if (event.target && event.target.id === "btnVolverComenzar") {
+  botonesOpciones.addEventListener("click", () => {
+    if (event.target && event.target.id !== "btnVolverComenzar") {
       // Detener temporizador si está corriendo
       temporizadorCorriendo = false;
       tiempoParaResponder = tiempo; // reiniciar tiempo
@@ -144,65 +87,16 @@ function inicializarEventListeners() {
         .then(res => res.json())
         .then(data => {
           estatDeLaPartida.preguntas = data;
-          localStorage.removeItem("partida");
           document.getElementById("botonesOpciones").setAttribute("hidden", true);
-          mostrarTodasPreguntas(estatDeLaPartida.preguntas);
           PreguntaVisible(estatDeLaPartida.preguntaActual, estatDeLaPartida.preguntaActual);
-          iniciarTemporizador();
         })
         .catch(e => {
           partidaContainer.innerHTML = `<p>Error cargando preguntas: ${e.message}</p>`;
         });
-    }
-
-    if (event.target && event.target.id === "btnPartidaNueva") {
-      temporizadorCorriendo = false;
-      tiempoParaResponder = tiempo; // reiniciar tiempo
-
-      estatDeLaPartida = {
-        preguntas: [],
-        respuestasUsuari: [], // Aquí anirem guardant les respostes
-        preguntaActual: 0,
-        respuestaSeleccionada: null
-      };
-
-       fetch(`../back/getPreguntas.php?action=getPreguntas&n=10`)
-        .then(res => res.json())
-        .then(data => {
-          estatDeLaPartida.preguntas = data;
-          document.getElementById("botonesOpciones").setAttribute("hidden", true);
-          mostrarTodasPreguntas(estatDeLaPartida.preguntas);
-          localStorage.clear();
-          verificarSesion();
-          clearInterval(interval);
-          document.getElementById("sesion").removeAttribute("hidden");
-          temporizadorContainer.textContent = "";
-        })
-        .catch(e => {
-          partidaContainer.innerHTML = `<p>Error cargando preguntas: ${e.message}</p>`;
-        });
-      
     }
   });
     eventListenerAgregado = true;
   }
-
-function bloquearRespuestas() {
-  estatDeLaPartida.respuestasUsuari.forEach((respuesta, i) => {
-    if (respuesta !== null) {
-      const botones = document.querySelectorAll(`input[preg="${i}"]`);
-      botones.forEach(btn => {
-        btn.disabled = true;
-        btn.style.backgroundColor = "#ccc"; // gris
-        btn.style.color = "#666"; // opcional, texto gris
-      
-        if (btn.getAttribute("resp") === respuesta) {
-        btn.checked = true;
-        }
-      });
-    }
-  });
-}
 
 // FUNCIONES DEL TEMPORIZADOR
 function mostrarTiempo() {
@@ -233,7 +127,18 @@ function PreguntaVisible(preguntaOcultar, preguntaMostrar) {
   // if (estatDeLaPartida.respuestasSeleccionadas.length > i ) {
     document.getElementById("pregunta-" + preguntaOcultar).setAttribute("hidden", true);
     document.getElementById("pregunta-" + preguntaMostrar).removeAttribute("hidden");
-    estatDeLaPartida.respuestaSeleccionada = null;
+
+    if (estatDeLaPartida.respuestasUsuari[estatDeLaPartida.preguntaActual] !== undefined && estatDeLaPartida.respuestasUsuari && estatDeLaPartida.respuestaSeleccionada !== null) {
+      const preguntaActual = estatDeLaPartida.preguntaActual;
+      const botones = document.querySelectorAll(`.btn[preg="${preguntaActual}"]`);
+      botones.forEach(btn => {
+        btn.disabled = true;
+        btn.style.backgroundColor = "#ccc"; // Gris para bloqueados
+      });
+      estatDeLaPartida.respuestaSeleccionada = null;
+    } else {
+      console.log("no hay respuesta guardada");
+    }
 }
 // FUNCIONES DEL JUEGO
 function mostrarTodasPreguntas(preguntas) {
@@ -244,16 +149,14 @@ function mostrarTodasPreguntas(preguntas) {
     let preguntaMostrada = preguntas[i].pregunta;
     let imagenMostrada = preguntas[i].imagen;
 
-    stringhtml += `<div id="pregunta-${i}" class="card shadow mb-4" hidden>`;
-    stringhtml += `  <div class="card-body">`;
-    stringhtml += ` <h3 class="card-title text-primary mb-3" preg="${i}"> P${i+1}. ${preguntaMostrada} </h3> `;
-    console.log("imagen mostrada " + imagenMostrada + " la i es" + i);
+    stringhtml += `<div id=pregunta-${i} hidden>`;
+    stringhtml += ` <h3 preg="${i}"> ${preguntaMostrada} </h3> `;
+    console.log("imagen mostrada " + imagenMostrada);
     stringhtml += ` <img src="${imagenMostrada}" width="300" length="300"/> <br>`;
     for (let j = 0; j < preguntas[i].respuestas.length; j++) {
       let btnId = `btn-${i}-${j}`;
-      stringhtml += `<label class="me-3 mt-2"><input preg="${i}" resp="${j}" name="P${i}" type="radio" id="${btnId}" class="btn">${preguntas[i].respuestas[j]} </label>`
+      stringhtml += `<button preg="${i}" resp="${j}" type="radio" id="${btnId}" class="btn">${preguntas[i].respuestas[j]} </button>`
   }
-    stringhtml += `</div>`;
     stringhtml += `</div>`;
 }
 
@@ -262,6 +165,7 @@ function mostrarTodasPreguntas(preguntas) {
   //   mostrarFinal(stringhtml);
   //   console.log("fin de las preguntas");
   // }
+  iniciarTemporizador();
 }
 
 function mostrarFinal() {
@@ -310,16 +214,22 @@ function mostrarFinal() {
 // }
 
 function renderitzarMarcador(resposta_elegida) {
+  if (estatDeLaPartida.preguntaActual < estatDeLaPartida.preguntas.length-1) {
     console.log("resposta elegida " + resposta_elegida);
-    estatDeLaPartida.respuestasUsuari[estatDeLaPartida.preguntaActual] = resposta_elegida;
+    estatDeLaPartida.respuestasUsuari.push(resposta_elegida);
     // estatDeLaPartida.preguntaActual++;
     console.log("pepepeppepe");
     console.log(estatDeLaPartida);
     // mostrarTodasPreguntas(estatDeLaPartida.preguntas);
+  } else {
+    estatDeLaPartida.respuestasUsuari.push(resposta_elegida);
+    estatDeLaPartida.preguntaActual++;
+    console.log("fin de las preguntas");
+    mostrarFinal();
+  }
   localStorage.setItem("partida", JSON.stringify(estatDeLaPartida))
   console.log(estatDeLaPartida)
 }
-//c
 
 window.addEventListener("DOMContentLoaded", (event) => {
   
@@ -329,14 +239,13 @@ window.addEventListener("DOMContentLoaded", (event) => {
       console.log(data);
       estatDeLaPartida = {
         preguntas: data,
-        respuestasUsuari: Array(10).fill(null), // Aquí anirem guardant les respostes
+        respuestasUsuari: [], // Aquí anirem guardant les respostes
         preguntaActual: 0,
         respuestaSeleccionada: null
       }
-      verificarSesion();
       inicializarEventListeners();
       if (localStorage.partida) {
-        partidaStorage = JSON.parse(localStorage.getItem("partida"));
+        let partidaStorage = JSON.parse(localStorage.getItem("partida"));
         console.log("partida guardada en localstorage y es" + JSON.stringify(partidaStorage.preguntas));
         mostrarTodasPreguntas(partidaStorage.preguntas);
       } else {
@@ -354,7 +263,7 @@ function BorrarPartida() {
   localStorage.removeItem("partida");
   estatDeLaPartida = {
     preguntas: [],
-    respuestasUsuari: Array(10).fill(null), // Aquí anirem guardant les respostes
+    respuestasUsuari: [], // Aquí anirem guardant les respostes
     preguntaActual: 0,
 };
   tiempoParaResponder = tiempo; // reiniciar tiempo
@@ -367,49 +276,56 @@ function guardarNombre() {
     const nombreInput = document.getElementById("nombreJugador");
     const nombre = nombreInput.value.trim();
     
-    if (!localStorage.getItem("nombreJugador")) {
-      // ❌ VALIDACIÓN: Si no hay nombre, BLOQUEAR TODO
-      if (nombre === "") {
-          alert("❌ Por favor, introduce tu nombre antes de continuar.");
-          nombreInput.focus(); // Enfocar el input para que escriba
-          nombreInput.style.borderColor = "red"; // Resaltar en rojo
-          return false; // ⚠️ IMPORTANTE: Devolver false
-      }
-      
-      // ✅ Si llegamos aquí, hay nombre válido
-      localStorage.setItem("nombreJugador", nombre);
-      
-      console.log("✅ Nombre guardado:", nombre);
-      return true; // ✅ Todo OK, permitir continuar
-    } else {
-      return true
+    // ❌ VALIDACIÓN: Si no hay nombre, BLOQUEAR TODO
+    if (nombre === "") {
+        alert("❌ Por favor, introduce tu nombre antes de continuar.");
+        nombreInput.focus(); // Enfocar el input para que escriba
+        nombreInput.style.borderColor = "red"; // Resaltar en rojo
+        return false; // ⚠️ IMPORTANTE: Devolver false
     }
+    
+    // ✅ Si llegamos aquí, hay nombre válido
+    localStorage.setItem("nombreJugador", nombre);
+    
+    console.log("✅ Nombre guardado:", nombre);
+    return true; // ✅ Todo OK, permitir continuar
 }
 
 function verificarSesion() {
     const nombreGuardado = localStorage.getItem("nombreJugador");
     
-    if (!nombreGuardado) return;
+    if (nombreGuardado) {
         // Si hay nombre guardado, mostrar mensaje de bienvenida
-        mensajeUser.innerHTML = `
+        mensajeSesion.innerHTML = `
             <div style="background-color: #d4edda; border: 1px solid #c3e6cb; padding: 10px; border-radius: 5px; margin-top: 10px;">
                 <h3>¡Hola de nuevo, ${nombreGuardado}! 👋</h3>
                 <p>Tu sesión anterior se ha restaurado.</p>
+                <button id="btnContinuar" style="background-color: #28a745; color: white; padding: 8px 16px; border: none; border-radius: 4px; cursor: pointer; margin-right: 10px;">
+                    Continuar jugando
+                </button>
+                <button id="btnCambiarNombre" style="background-color: #007bff; color: white; padding: 8px 16px; border: none; border-radius: 4px; cursor: pointer;">
+                    Cambiar nombre
+                </button>
             </div>
         `;
         
         // Ocultar el formulario inicial
-        document.getElementById("nombreJugador").setAttribute("hidden", true);
-        // document.getElementById("btnIniciarSesion").style.display = "none";
+        document.getElementById("nombreJugador").style.display = "none";
+        document.getElementById("btnIniciarSesion").style.display = "none";
         
-        // // Agregar eventos a los nuevos botones
-        // document.getElementById("btnContinuar").addEventListener("click", function() {
-        // //     iniciarJuego();
-        // });
+        // Agregar eventos a los nuevos botones
+        document.getElementById("btnContinuar").addEventListener("click", function() {
+            iniciarJuego();
+        });
         
-        // document.getElementById("btnCambiarNombre").addEventListener("click", function() {
-        //     mostrarFormularioNombre();
-        // });
+        document.getElementById("btnCambiarNombre").addEventListener("click", function() {
+            mostrarFormularioNombre();
+        });
+        
+    } else {
+        // Si no hay nombre guardado, mostrar formulario normal
+        mostrarFormularioNombre();
+    }
 }
 
 // function reiniciarJuego() {

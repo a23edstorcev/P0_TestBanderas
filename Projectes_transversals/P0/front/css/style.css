@@ -1,0 +1,445 @@
+/* ============================================
+   VARIABLES Y CONFIGURACIÓN BASE
+   ============================================ */
+:root {
+  --color-principal: #4a90e2;
+  --color-secundario: #2c3e50;
+  --color-exito: #27ae60;
+  --color-peligro: #e74c3c;
+  --color-texto: #333;
+  --color-fondo: #f8f9fa;
+  --sombra-suave: 0 2px 8px rgba(0,0,0,0.08);
+  --sombra-media: 0 4px 16px rgba(0,0,0,0.12);
+  --radio-bordes: 8px;
+  --transicion: all 0.3s ease;
+}
+
+/* ============================================
+   RESET Y BASE
+   ============================================ */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+  background: linear-gradient(135deg, #9fb1ff 30%, #8a779b 70%);
+  min-height: 100vh;
+  padding: 2rem 1rem;
+  color: var(--color-texto);
+}
+
+/* ============================================
+   CONTENEDOR PRINCIPAL
+   ============================================ */
+body > * {
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* ============================================
+   TÍTULO PRINCIPAL
+   ============================================ */
+h1 {
+  text-align: center;
+  color: white;
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 2rem;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+  animation: fadeInDown 0.6s ease;
+}
+
+/* ============================================
+   TEMPORIZADOR
+   ============================================ */
+#temporizador {
+  background: white;
+  padding: 1rem 2rem;
+  border-radius: var(--radio-bordes);
+  text-align: center;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--color-principal);
+  box-shadow: var(--sombra-media);
+  margin-bottom: 2rem;
+  animation: fadeIn 0.6s ease 0.2s backwards;
+  position: relative;
+  overflow: hidden;
+}
+
+#temporizador::before {
+  content: '⏱️';
+  margin-right: 0.5rem;
+}
+
+/* Efecto de urgencia cuando queda poco tiempo */
+#temporizador.urgente {
+  animation: pulso 1s infinite;
+  background: #fff3cd;
+  color: #856404;
+}
+
+/* ============================================
+   SECCIÓN DE SESIÓN
+   ============================================ */
+#sesion {
+  background: white;
+  padding: 2rem;
+  border-radius: var(--radio-bordes);
+  box-shadow: var(--sombra-media);
+  margin-bottom: 2rem;
+  animation: fadeIn 0.6s ease 0.3s backwards;
+}
+
+#nombreJugador {
+  width: 100%;
+  padding: 0.875rem 1rem;
+  border: 2px solid #e0e0e0;
+  border-radius: var(--radio-bordes);
+  font-size: 1rem;
+  margin-bottom: 1rem;
+  transition: var(--transicion);
+  font-family: inherit;
+}
+
+#nombreJugador:focus {
+  outline: none;
+  border-color: var(--color-principal);
+  box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.1);
+}
+
+#nombreJugador::placeholder {
+  color: #aaa;
+}
+
+/* Grupo de botones de sesión */
+#sesion button {
+  margin-right: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+#mensajeSesion {
+  margin-top: 1rem;
+  animation: slideDown 0.4s ease;
+}
+
+/* ============================================
+   ÁREA DE PREGUNTAS
+   ============================================ */
+#partida {
+  animation: fadeIn 0.6s ease 0.4s backwards;
+  margin: 2rem auto;
+  align-content: center;
+  width: fit-content;
+  font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+}
+
+.card {
+  background: white;
+  padding: 2rem;
+  border-radius: var(--radio-bordes);
+  box-shadow: var(--sombra-media);
+  margin-bottom: 1.5rem;
+  animation: slideUp 0.5s ease;
+}
+
+.card h3 {
+  color: var(--color-secundario);
+  margin-bottom: 1.5rem;
+  font-size: 1.25rem;
+  line-height: 1.5;
+}
+
+.card img {
+  display: block;
+  margin: 0 auto 1.5rem;
+  border-radius: var(--radio-bordes);
+  box-shadow: var(--sombra-suave);
+  max-width: 100%;
+  height: auto;
+  transition: transform 0.3s ease;
+}
+
+.card img:hover {
+  transform: scale(1.02);
+}
+
+/* Opciones de respuesta */
+.card label {
+  display: block;
+  padding: 0.875rem 1rem;
+  margin-bottom: 0.5rem;
+  background: #f8f9fa;
+  border: 2px solid transparent;
+  border-radius: var(--radio-bordes);
+  cursor: pointer;
+  transition: var(--transicion);
+  position: relative;
+  user-select: none;
+}
+
+.card label:hover {
+  background: #e9ecef;
+  border-color: var(--color-principal);
+  transform: translateX(4px);
+}
+
+.card label input[type="radio"] {
+  margin-right: 0.75rem;
+  cursor: pointer;
+  accent-color: var(--color-principal);
+}
+
+.card label input[type="radio"]:checked {
+  background: var(--color-exito);
+}
+
+/* Respuesta seleccionada */
+.card label:has(input:checked) {
+  background: var(--color-exito);
+  color: white;
+  border-color: var(--color-exito);
+  font-weight: 600;
+}
+
+/* Respuestas bloqueadas */
+.card label input:disabled {
+  cursor: not-allowed;
+}
+
+.card label:has(input:disabled) {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.card label:has(input:disabled):hover {
+  transform: none;
+  border-color: transparent;
+}
+
+/* ============================================
+   BOTONES
+   ============================================ */
+button {
+  background: var(--color-principal);
+  color: white;
+  border: none;
+  padding: 0.875rem 1.75rem;
+  border-radius: var(--radio-bordes);
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transicion);
+  box-shadow: var(--sombra-suave);
+  font-family: inherit;
+}
+
+button:hover {
+  background: #3a7bc8;
+  transform: translateY(-2px);
+  box-shadow: var(--sombra-media);
+}
+
+button:active {
+  transform: translateY(0);
+}
+
+/* Botones específicos */
+#btnIniciarSesion {
+  background: var(--color-exito);
+}
+
+#btnIniciarSesion:hover {
+  background: #229954;
+}
+
+#btnBorrarNombre {
+  background: var(--color-peligro);
+}
+
+#btnBorrarNombre:hover {
+  background: #c0392b;
+}
+
+/* ============================================
+   NAVEGACIÓN DE PREGUNTAS
+   ============================================ */
+#btnsCambiarPregunta {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  margin: 2rem auto;
+  width: fit-content;
+  animation: fadeIn 0.6s ease;
+}
+
+#btnsCambiarPregunta button {
+  min-width: 150px;
+}
+
+#btnAnterior {
+  background: #6c757d;
+}
+
+#btnAnterior:hover {
+  background: #5a6268;
+}
+
+#btnSiguiente {
+  background: var(--color-principal);
+}
+
+/* ============================================
+   MARCADOR
+   ============================================ */
+#marcador {
+  background: var(--color-exito);
+  color: white;
+  padding: 1rem;
+  border-radius: var(--radio-bordes);
+  text-align: center;
+  font-size: 1.25rem;
+  font-weight: 700;
+  box-shadow: var(--sombra-media);
+  margin: 2rem 0;
+}
+
+/* ============================================
+   OPCIONES FINALES
+   ============================================ */
+#botonesOpciones {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin: 2rem auto;
+  width: fit-content;
+  align-items: center;
+  animation: fadeIn 0.6s ease;
+}
+
+#botonesOpciones button {
+  width: 100%;
+}
+
+#btnVolverComenzar {
+  background: var(--color-exito);
+}
+
+#btnPartidaNueva {
+  background: #f39c12;
+}
+
+#btnPartidaNueva:hover {
+  background: #d68910;
+}
+
+/* ============================================
+   ANIMACIONES
+   ============================================ */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    max-height: 0;
+  }
+  to {
+    opacity: 1;
+    max-height: 500px;
+  }
+}
+
+@keyframes pulso {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.02);
+  }
+}
+
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+@media (max-width: 768px) {
+  body {
+    padding: 1rem 0.5rem;
+  }
+
+  h1 {
+    font-size: 1.5rem;
+  }
+
+  #sesion, .card {
+    padding: 1.5rem;
+  }
+
+  #temporizador {
+    font-size: 1.25rem;
+    padding: 0.875rem 1.5rem;
+  }
+
+  button {
+    padding: 0.75rem 1.25rem;
+    font-size: 0.9375rem;
+  }
+
+  #btnsCambiarPregunta {
+    flex-direction: column;
+  }
+
+  #btnsCambiarPregunta button {
+    max-width: none;
+  }
+}
+
+/* ============================================
+   UTILIDADES
+   ============================================ */
+[hidden] {
+  display: none;
+}
+
+.text-center {
+  text-align: center;
+}
+
+/* Mejora del focus para accesibilidad */
+*:focus-visible {
+  outline: 3px solid var(--color-principal);
+  outline-offset: 2px;
+}
