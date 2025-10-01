@@ -1,51 +1,52 @@
-var tiempo = 30;
+// VARIBALES DEL TEMPORIZADOR
+let tiempo = 30;
 let tiempoParaResponder = tiempo; // en segundos
 let temporizadorCorriendo = false;
 let eventListenerAgregado = false;
-let partidaStorage = [];
-
 let interval; // varible global del tempporizador para poder pararlo cuando quiera
 
+// VARIABLES DE EL ESTADO DE LA PARTIDA
+let respuestasTotales = 0;
+let respuestasCorrectas = 0;
+let partidaStorage = [];
 let estatDeLaPartida = {
   preguntas: [],
-  respuestasUsuari: Array(10).fill(null), // Aquí anirem guardant les respostes
+  respuestasUsuari: Array(10).fill(null), 
   preguntaActual: 0,
   respuestaSeleccionada: null
 };
 
+
+//VARIABLES DEL LOS CONTENEDORES/ETIQUETAS 
 let partidaContainer = document.getElementById("partida");
 let temporizadorContainer = document.getElementById("temporizador");
 let sesionContainer = document.getElementById("sesion");
 let btnsCambiarPregunta = document.getElementById("btnsCambiarPregunta");
 let botonesOpciones = document.getElementById("botonesOpciones");
 let mensajeUser = document.getElementById("mensajeSesion");
+let marcadorContainer = document.getElementById("marcador");
+let bienvenidaContainer = document.getElementById("mensajeBienvenida");
 
-let respuestasTotales = 0;
-let respuestasCorrectas = 0;
-
-// Iiciar los listeners de los botones
+//////////////////////////////////////////
+// FUNCION PARA INICIALIZAR LOS LISTENERS 
+/////////////////////////////////////////
 function inicializarEventListeners() {
   console.log(eventListenerAgregado);
   if (eventListenerAgregado) return;
-  
-  // listener para los botones de las respuestas
-  partidaContainer.addEventListener("click", function (e) {
+    partidaContainer.addEventListener("click", function (e) {
     console.log("han clickado a " + e.target);
     let respuesta = e.target.getAttribute("resp");
     if (e.target.classList.contains("btn")) {
       estatDeLaPartida.respuestaSeleccionada = respuesta;
       console.log("respuesta seleccionada " + estatDeLaPartida.respuestaSeleccionada);      
-      // ✅ DESTACAR el botón clickeado
       let grupoName = e.target.getAttribute("name");
       let radios = document.querySelectorAll(`input[name="${grupoName}"]`);
 
-      // 🔹 resetear estilos de todas las opciones de esa pregunta
       radios.forEach(r => {
         r.style.backgroundColor = "";
         r.style.color = "";
       });
 
-      // 🔹 aplicar estilo solo al seleccionado
       e.target.style.backgroundColor = "#28a745"; // verde
       e.target.style.color = "white";
     }
@@ -57,13 +58,18 @@ function inicializarEventListeners() {
       if (!localStorage.getItem("nombreJugador")) {
         validName = guardarNombre();
         if (!validName) return;
+        bienvenidaContainer.setAttribute("hidden", true);
         document.getElementById("sesion").setAttribute("hidden", true);
         document.getElementById("btnsCambiarPregunta").removeAttribute("hidden");
+        marcadorContainer.removeAttribute("hidden");
         PreguntaVisible(estatDeLaPartida.preguntaActual, estatDeLaPartida.preguntaActual);
+        actualitzaMarcador();
       } else {
+        bienvenidaContainer.setAttribute("hidden", true);
         document.getElementById("sesion").setAttribute("hidden", true);
         document.getElementById("btnsCambiarPregunta").removeAttribute("hidden");
         document.getElementById("mensajeSesion").removeAttribute("hidden");
+        marcadorContainer.removeAttribute("hidden");
         if (partidaStorage.length !== 0) {
           console.log("hay partida guardada");
           estatDeLaPartida = {
@@ -74,27 +80,21 @@ function inicializarEventListeners() {
           };
           bloquearRespuestas()
         } 
-        console.log("PRUEBA");
         PreguntaVisible(estatDeLaPartida.preguntaActual, estatDeLaPartida.preguntaActual);
+        actualitzaMarcador();
       }
-        
+      actualitzaMarcador();  
       console.log(estatDeLaPartida);
       iniciarTemporizador();
     }
 
     if (e.target && e.target.id === "btnBorrarNombre") {
       localStorage.clear();
+      marcadorContainer.setAttribute("hidden", true);
       document.getElementById("mensajeSesion").setAttribute("hidden", true);
       document.getElementById("nombreJugador").removeAttribute("hidden");
       document.getElementById("btnIniciarSesion").removeAttribute("hidden");
-      // validName = guardarNombre();
-      // if (!validName) return;
-      // document.getElementById("sesion").setAttribute("hidden", true);
-      // document.getElementById("btnsCambiarPregunta").removeAttribute("hidden");
-      // PreguntaVisible(estatDeLaPartida.preguntaActual, estatDeLaPartida.preguntaActual);
-      // iniciarTemporizador();
     }
-    // TODO: añadir listener de boton de cerras sesión
   });
 
   btnsCambiarPregunta.addEventListener("click", function (e) {
@@ -106,7 +106,8 @@ function inicializarEventListeners() {
           renderitzarMarcador(estatDeLaPartida.respuestaSeleccionada);
         }
         PreguntaVisible(preguntaMostrada, estatDeLaPartida.preguntaActual);
-      }
+        actualitzaMarcador();
+      }z
     } else if (e.target && e.target.id === "btnSiguiente") {
       if (estatDeLaPartida.preguntaActual < estatDeLaPartida.preguntas.length ) {
         if (estatDeLaPartida.respuestaSeleccionada !== null) {
@@ -118,14 +119,13 @@ function inicializarEventListeners() {
            
         } else {
           PreguntaVisible(preguntaMostrada, estatDeLaPartida.preguntaActual);
+          actualitzaMarcador();
         }
 
       }
     }
   });
     
-
-  // listener para el boton de volver a comenzar
   botonesOpciones.addEventListener("click", (event) => {
     if (event.target && event.target.id === "btnVolverComenzar") {
       // Detener temporizador si está corriendo
@@ -134,7 +134,7 @@ function inicializarEventListeners() {
 
       estatDeLaPartida = {
         preguntas: [],
-        respuestasUsuari: [], // Aquí anirem guardant les respostes
+        respuestasUsuari: Array(10).fill(null), 
         preguntaActual: 0,
         respuestaSeleccionada: null
       };
@@ -146,8 +146,11 @@ function inicializarEventListeners() {
           estatDeLaPartida.preguntas = data;
           localStorage.removeItem("partida");
           document.getElementById("botonesOpciones").setAttribute("hidden", true);
+          document.getElementById("btnsCambiarPregunta").removeAttribute("hidden"); 
+          marcadorContainer.removeAttribute("hidden");
           mostrarTodasPreguntas(estatDeLaPartida.preguntas);
           PreguntaVisible(estatDeLaPartida.preguntaActual, estatDeLaPartida.preguntaActual);
+          actualitzaMarcador();
           iniciarTemporizador();
         })
         .catch(e => {
@@ -161,7 +164,7 @@ function inicializarEventListeners() {
 
       estatDeLaPartida = {
         preguntas: [],
-        respuestasUsuari: [], // Aquí anirem guardant les respostes
+        respuestasUsuari: Array(10).fill(null), 
         preguntaActual: 0,
         respuestaSeleccionada: null
       };
@@ -176,6 +179,8 @@ function inicializarEventListeners() {
           verificarSesion();
           clearInterval(interval);
           document.getElementById("sesion").removeAttribute("hidden");
+          marcadorContainer.setAttribute("hidden", true);
+          bienvenidaContainer.removeAttribute("hidden");
           temporizadorContainer.textContent = "";
         })
         .catch(e => {
@@ -184,9 +189,12 @@ function inicializarEventListeners() {
       
     }
   });
-    eventListenerAgregado = true;
-  }
+  eventListenerAgregado = true;
+}
 
+////////////////////////////////////////////////////
+/// FUNCION PARA BLOQUEAR LAS RESPUESTAS RESPONDIDAS
+////////////////////////////////////////////////////
 function bloquearRespuestas() {
   estatDeLaPartida.respuestasUsuari.forEach((respuesta, i) => {
     if (respuesta !== null) {
@@ -204,9 +212,14 @@ function bloquearRespuestas() {
   });
 }
 
+
+
+//////////////////////////////
 // FUNCIONES DEL TEMPORIZADOR
+//////////////////////////////
+
 function mostrarTiempo() {
-  if (!temporizadorContainer) return; // evita errores si no existe
+  if (!temporizadorContainer) return; 
   console.log("tiempo para responder " + tiempoParaResponder);
   temporizadorContainer.textContent =
     "Temps restant: " + tiempoParaResponder + " s";
@@ -229,8 +242,6 @@ function iniciarTemporizador() {
 }
 
 function PreguntaVisible(preguntaOcultar, preguntaMostrar) {
-  // let i = 0;
-  // if (estatDeLaPartida.respuestasSeleccionadas.length > i ) {
     document.getElementById("pregunta-" + preguntaOcultar).setAttribute("hidden", true);
     document.getElementById("pregunta-" + preguntaMostrar).removeAttribute("hidden");
     estatDeLaPartida.respuestaSeleccionada = null;
@@ -258,17 +269,21 @@ function mostrarTodasPreguntas(preguntas) {
 }
 
   partidaContainer.innerHTML = stringhtml;
-  // } else {
-  //   mostrarFinal(stringhtml);
-  //   console.log("fin de las preguntas");
-  // }
 }
 
+//////////////////////////////
+// MOSTRAR LA PANTALLA FINAL
+/////////////////////////////
+
 function mostrarFinal() {
+  let respuestasNoContestadas = 0;
   clearInterval(interval);
-  // stringhtml = "";
+  marcadorContainer.setAttribute("hidden", true);
+  temporizadorContainer.setAttribute("hidden", true);
+  document.getElementById("btnsCambiarPregunta").setAttribute("hidden", true);
   partidaContainer.innerHTML = `<h2>Calculando resultados...</h2>`;
-  fetch(`../back/finalitza.php?action=finalitza`, {
+  setTimeout(() => {
+    fetch(`../back/finalitza.php?action=finalitza`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ respuestas: estatDeLaPartida.respuestasUsuari }),
@@ -278,16 +293,22 @@ function mostrarFinal() {
       console.log(
         "data total" + data.total + " data correctas " + data.correctas
       );
+      // CALCULAR LAS RESPUESTAS QUE SE HAN DEJADO COMO NO RESPONDIDAS
+      for (let i = 0; estatDeLaPartida.respuestasUsuari.length > i; i++) {
+        if (estatDeLaPartida.respuestasUsuari[i] == null) {
+          respuestasNoContestadas++;
+        }
+      }
       respuestasTotales = data.total;
       respuestasCorrectas = data.correctas;
-      // console.log("data total" + respuestasTotales + " data correctas " + respuestasCorrectas);
+      let respuestasContestadas = respuestasTotales - respuestasNoContestadas;
       let stringhtml = "";
-      stringhtml += ` <h3> FIN DE LAS PREGUNTAS </h3> `;
+      stringhtml += ` <h3> FIN DE LES PREGUNTES </h3> `;
       stringhtml += ` <p> RESULTADOS: </p>`;
-      stringhtml += ` <p> Has contestat ${respuestasTotales} preguntes. </p>`;
+      stringhtml += ` <p> Has contestat ${respuestasContestadas} preguntes. </p>`;
+      stringhtml += ` <p> Has deixat ${respuestasNoContestadas} de 10 preguntes sense respondre. </p>`;
       stringhtml += ` <p> Has contestat correctament ${respuestasCorrectas} de ${10} preguntes. </p>`;
       
-      document.getElementById("btnsCambiarPregunta").setAttribute("hidden", true);
       document.getElementById("botonesOpciones").removeAttribute("hidden");
 
       partidaContainer.innerHTML = stringhtml;
@@ -295,34 +316,25 @@ function mostrarFinal() {
     .catch((e) => {
       partidaContainer.innerHTML = `<p>Error cargando respustas: ${e.message}</p>`;
     });
+  }, 2000) 
 }
 
-// window.changeColor = function(resposta_elegida, id_pregunta, btnId) {
-//   var moi = document.getElementById(btnId);
-//   var resposta_correcta = preguntas.preguntes[id_pregunta].resposta_correcta;
-
-//   renderitzarMarcador(resposta_correcta, resposta_elegida);
-//   if(resposta_correcta == resposta_elegida  ) {
-//     moi.style.color = 'green';
-//   } else {
-//     moi.style.color = 'red';
-//   }
-// }
 
 function renderitzarMarcador(resposta_elegida) {
     console.log("resposta elegida " + resposta_elegida);
     estatDeLaPartida.respuestasUsuari[estatDeLaPartida.preguntaActual] = resposta_elegida;
-    // estatDeLaPartida.preguntaActual++;
-    console.log("pepepeppepe");
     console.log(estatDeLaPartida);
-    // mostrarTodasPreguntas(estatDeLaPartida.preguntas);
   localStorage.setItem("partida", JSON.stringify(estatDeLaPartida))
   console.log(estatDeLaPartida)
 }
-//c
+
+////////////////////////////////
+// FUNCION DONDE SE INICIA TODO
+////////////////////////////////
 
 window.addEventListener("DOMContentLoaded", (event) => {
-  
+  marcadorContainer.setAttribute("hidden", true);
+
   fetch(`../back/getPreguntas.php?action=getPreguntas&n=10`)
     .then((res) => res.json())
     .then((data) => {
@@ -348,7 +360,9 @@ window.addEventListener("DOMContentLoaded", (event) => {
     });
 });
 
-// "INICO DE SESIÓN" 
+///////////////////////////////////////////////////////////////
+// FUNCIONES RELACIONADAS CON LA SESIÓN Y LA PARTIDA GUARDADA
+//////////////////////////////////////////////////////////////
 
 function BorrarPartida() {
   localStorage.removeItem("partida");
@@ -359,28 +373,24 @@ function BorrarPartida() {
 };
   tiempoParaResponder = tiempo; // reiniciar tiempo
   mostrarTodasPreguntas(estatDeLaPartida.preguntas);
+  marcadorContainer.setAttribute("hidden", true);
 };
-
-
 
 function guardarNombre() {
     const nombreInput = document.getElementById("nombreJugador");
     const nombre = nombreInput.value.trim();
-    
     if (!localStorage.getItem("nombreJugador")) {
-      // ❌ VALIDACIÓN: Si no hay nombre, BLOQUEAR TODO
       if (nombre === "") {
           alert("❌ Por favor, introduce tu nombre antes de continuar.");
           nombreInput.focus(); // Enfocar el input para que escriba
           nombreInput.style.borderColor = "red"; // Resaltar en rojo
-          return false; // ⚠️ IMPORTANTE: Devolver false
+          return false; 
       }
       
-      // ✅ Si llegamos aquí, hay nombre válido
       localStorage.setItem("nombreJugador", nombre);
       
       console.log("✅ Nombre guardado:", nombre);
-      return true; // ✅ Todo OK, permitir continuar
+      return true; 
     } else {
       return true
     }
@@ -397,56 +407,54 @@ function verificarSesion() {
                 <p>Tu sesión anterior se ha restaurado.</p>
             </div>
         `;
-        
         // Ocultar el formulario inicial
         document.getElementById("nombreJugador").setAttribute("hidden", true);
-        // document.getElementById("btnIniciarSesion").style.display = "none";
-        
-        // // Agregar eventos a los nuevos botones
-        // document.getElementById("btnContinuar").addEventListener("click", function() {
-        // //     iniciarJuego();
-        // });
-        
-        // document.getElementById("btnCambiarNombre").addEventListener("click", function() {
-        //     mostrarFormularioNombre();
-        // });
 }
 
-// function reiniciarJuego() {
-//   // Resetear estado
-//   estatDeLaPartida = {
-//     preguntas: [],
-//     respuestasUsuari: [],
-//     preguntaActual: 0,
-//   };
-//   tiempoParaResponder = 5;
-//   temporizadorCorriendo = false;
 
-//   // Mostrar mensaje de carga
-//   partidaContainer.innerHTML = `<h2>Cargando nuevas preguntas...</h2>`;
+////////////////////////////
+// FUNCIONES DE EL MARCADOR
+////////////////////////////
 
-//   // Fetch al backend para obtener nuevas preguntas
-//   fetch(`../back/getPreguntas.php?action=getPreguntas&n=10`)
-//     .then((res) => res.json())
-//     .then((data) => {
-//       estatDeLaPartida.preguntas = data;
-//       mostrarTodasPreguntas(estatDeLaPartida.preguntas); // reutiliza tu función existente
-//     })
-//     .catch((e) => {
-//       partidaContainer.innerHTML = `<p>Error cargando preguntas: ${e.message}</p>`;
-//     });
-// }
-// function fetchPreguntas(n) {
-//   fetch(`../../back/getPreguntas.php?action=getPreguntas&n=${n}`)
-//     .then(res => res.json())
-//     .then(data => {
-//       preguntas = data;
-//       preguntaActual = 0;
-//       estatDeLaPartidaContainer.respuestasUsuari = [];
-//       inicializarEventListeners();
-//       mostrarTodasPreguntas();
-//     })
-//     .catch(e => {
-//       container.innerHTML = `<p>Error cargando preguntas: ${e.message}</p>`;
-//     });
-// }
+function actualitzaMarcador(mostrarResultados = false) {
+  let htmlString = "<h4>📊 Progreso</h4>";
+  htmlString += "<div class='marcador-grid'>";
+  
+  for (let i = 0; i < estatDeLaPartida.preguntas.length; i++) {
+    const respondida = estatDeLaPartida.respuestasUsuari[i] !== null;
+    const esActual = i === estatDeLaPartida.preguntaActual;
+    
+    let badgeClass = 'text-bg-secondary';
+    let icon = i + 1;
+    
+    // Si está respondida
+    if (respondida) {
+        // Durante el juego solo mostrar que está respondida
+        badgeClass = 'text-bg-success';
+        icon = '✓';
+      }    
+
+    let bordeActual = esActual ? 'border border-primary border-3' : '';
+    
+    htmlString += `
+      <div class="marcador-item ${bordeActual}" onclick="irAPregunta(${i})">
+        <span class='badge ${badgeClass}'>${icon}</span>
+        <small>P${i + 1}</small>
+      </div>
+    `;
+  }
+  
+  htmlString += "</div>";
+
+  marcadorContainer.innerHTML = htmlString;
+  console.log(estatDeLaPartida);
+}
+
+window.irAPregunta = function(numeroPregunta) {
+  if (numeroPregunta >= 0 && numeroPregunta < estatDeLaPartida.preguntas.length) {
+    let preguntaAnterior = estatDeLaPartida.preguntaActual;
+    estatDeLaPartida.preguntaActual = numeroPregunta;
+    PreguntaVisible(preguntaAnterior, numeroPregunta);
+    actualitzaMarcador();
+  }
+};

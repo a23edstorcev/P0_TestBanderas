@@ -298,15 +298,70 @@ button:active {
    MARCADOR
    ============================================ */
 #marcador {
-  background: var(--color-exito);
-  color: white;
-  padding: 1rem;
-  border-radius: var(--radio-bordes);
-  text-align: center;
-  font-size: 1.25rem;
-  font-weight: 700;
-  box-shadow: var(--sombra-media);
-  margin: 2rem 0;
+    position: fixed;
+    right: 20px;
+    top: 80px;
+    width: 250px;
+    background: white;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    z-index: 1000;
+}
+
+#marcador h4 {
+    margin-bottom: 15px;
+    color: #333;
+    border-bottom: 2px solid #007bff;
+    padding-bottom: 10px;
+    font-size: 1.1rem;
+}
+
+.marcador-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.marcador-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+    padding: 8px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s;
+    background: #f8f9fa;
+}
+
+.marcador-item:hover {
+    transform: scale(1.05);
+    background: #e9ecef;
+}
+
+.marcador-item .badge {
+    font-size: 1rem;
+    padding: 8px 12px;
+    min-width: 35px;
+}
+
+.marcador-item small {
+    color: #666;
+    font-weight: 500;
+}
+
+.marcador-stats {
+    padding: 10px;
+    background: #f8f9fa;
+    border-radius: 6px;
+}
+
+.marcador-stats p {
+    margin: 5px 0;
+    color: #666;
+    font-size: 0.9rem;
 }
 
 /* ============================================
@@ -396,6 +451,17 @@ button:active {
    RESPONSIVE
    ============================================ */
 @media (max-width: 768px) {
+  #marcador {
+      position: static; /* ya no flota en móviles */
+      width: 100%;
+      margin: 1rem auto;
+      top: auto;
+      right: auto;
+  }
+
+  .marcador-grid {
+      grid-template-columns: repeat(1, 1fr); /* una columna en móviles */
+  }
   body {
     padding: 1rem 0.5rem;
   }
