@@ -1,5 +1,7 @@
 🧩 Objectiu de l'Aplicació
+
 Aquesta aplicació té com a objectiu principal facilitar l’aprenentatge interactiu de les banderes dels països del món mitjançant un joc senzill i dinàmic. Està pensada com una primera pràctica dins del cicle de DAW, de manera que no busca complexitat tècnica màxima, sinó que serveix per familiaritzar-se amb el desenvolupament web i entendre millor el funcionament de la programació front-end i back-end.
+
 
 
 
@@ -10,6 +12,7 @@ L’aplicació contribueix a aquest ODS proporcionant una eina d’aprenentatge 
 
 
 
+
 🛠️ Detalls Tècnics
 Aquest projecte ha estat desenvolupat utilitzant els següents tecnologies:
 • JavaScript
@@ -17,6 +20,7 @@ Aquest projecte ha estat desenvolupat utilitzant els següents tecnologies:
 • PHP
 • HTML
 • BOOSTRAP
+
 
 
 -------
@@ -30,7 +34,11 @@ En la primera revisió, l’overview del projecte no va obtenir uns resultats ga
 Tanmateix, gràcies a les recomanacions de l’eina, vaig poder identificar els punts febles i millorar progressivament el codi, aconseguint que fos més net, segur i fàcil de mantenir.
 
 Abans: overview amb diversos problemes.
+<img width="1891" height="811" alt="Captura de pantalla 2025-10-02 204218" src="https://github.com/user-attachments/assets/e084c639-1c5d-40f6-9863-cd8077f72ce2" />
+
+
 Després: overview millorat després de les correccions aplicades.
+
 
 
 
