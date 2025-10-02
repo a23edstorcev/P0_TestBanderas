@@ -3,14 +3,14 @@
 Aquesta aplicació té com a objectiu principal facilitar l’aprenentatge interactiu de les banderes dels països del món mitjançant un joc senzill i dinàmic. Està pensada com una primera pràctica dins del cicle de DAW, de manera que no busca complexitat tècnica màxima, sinó que serveix per familiaritzar-se amb el desenvolupament web i entendre millor el funcionament de la programació front-end i back-end.
 
 
-
+----------
 
 🌍 Alineació amb un Objectiu de Desenvolupament Sostenible (ODS)
 El projecte s’alinea amb l’ODS 4: Educació de Qualitat.
 
 L’aplicació contribueix a aquest ODS proporcionant una eina d’aprenentatge digital gratuïta i accessible que permet reforçar coneixements de geografia i cultura a través del joc. A més, fomenta l’aprenentatge autònom i l’ús de recursos tecnològics aplicats a l’educació, que és un dels objectius principals de l’ODS 4.
 
-
+----------
 
 
 🛠️ Detalls Tècnics
@@ -42,7 +42,7 @@ Després: overview millorat després de les correccions aplicades.
 
 <img width="1100" height="806" alt="Captura de pantalla 2025-10-02 221605" src="https://github.com/user-attachments/assets/cdf712f5-c7e8-4006-aab4-d8bddf127584" />
 
-
+--------
 
 🚀 Vercel
 
