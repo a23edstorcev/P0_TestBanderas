@@ -1,3 +1,6 @@
+let rutaPRODback = "/P0/back/";
+// let rutaLOCAL =
+let rutaActual = rutaPRODback // ESTA VARIBLE SE LE ASIGNARA LA RUTA QUE SE QUIERA USAR Y ASI NO HAY QUE CAMBIAR TODAS UNA A UNA
 // VARIBALES DEL TEMPORIZADOR
 let tiempo = 30;
 let tiempoParaResponder = tiempo; // en segundos
@@ -140,7 +143,7 @@ function inicializarEventListeners() {
       };
       console.log(estatDeLaPartida);
       // Obtener nuevas preguntas del back
-      fetch(`../back/getPreguntas.php?action=getPreguntas&n=10`)
+      fetch(`${rutaActual}getPreguntas.php?action=getPreguntas&n=10`)
         .then(res => res.json())
         .then(data => {
           estatDeLaPartida.preguntas = data;
@@ -169,7 +172,7 @@ function inicializarEventListeners() {
         respuestaSeleccionada: null
       };
 
-       fetch(`../back/getPreguntas.php?action=getPreguntas&n=10`)
+       fetch(`${rutaActual}getPreguntas.php?action=getPreguntas&n=10`)
         .then(res => res.json())
         .then(data => {
           estatDeLaPartida.preguntas = data;
@@ -283,7 +286,7 @@ function mostrarFinal() {
   document.getElementById("btnsCambiarPregunta").setAttribute("hidden", true);
   partidaContainer.innerHTML = `<h2>Calculando resultados...</h2>`;
   setTimeout(() => {
-    fetch(`../back/finalitza.php?action=finalitza`, {
+    fetch(`${rutaActual}finalitza.php?action=finalitza`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ respuestas: estatDeLaPartida.respuestasUsuari }),
@@ -335,7 +338,7 @@ function renderitzarMarcador(resposta_elegida) {
 window.addEventListener("DOMContentLoaded", (event) => {
   marcadorContainer.setAttribute("hidden", true);
 
-  fetch(`../back/getPreguntas.php?action=getPreguntas&n=10`)
+  fetch(`${rutaActual}getPreguntas.php?action=getPreguntas&n=10`)
     .then((res) => res.json())
     .then((data) => {
       console.log(data);

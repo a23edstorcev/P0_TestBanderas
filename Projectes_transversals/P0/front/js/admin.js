@@ -1,3 +1,7 @@
+let rutaPRODback = "/P0/back/";
+// let rutaLOCAL =
+let rutaActual = rutaPRODback // ESTA VARIBLE SE LE ASIGNARA LA RUTA QUE SE QUIERA USAR Y ASI NO HAY QUE CAMBIAR TODAS UNA A UNA
+
 const container = document.getElementById('admin-container');
 const saveBtn = document.getElementById('save-btn');
 const cancelBtn = document.getElementById('cancel-btn');
@@ -76,7 +80,7 @@ function inicializarEventListeners() {
 }
 
 function createQuestion(question, answer_1, answer_2, answer_3, answer_4, correct_answer, imagen) {
-  fetch('../back/admin.php?action=create', {
+  fetch(`${rutaActual}admin.php?action=create`, {
     method: 'POST',
     headers: {'Content-Type': 'application/json'},
     body: JSON.stringify({ question, answer_1, answer_2, answer_3, answer_4, correct_answer, imagen })
@@ -97,7 +101,7 @@ function createQuestion(question, answer_1, answer_2, answer_3, answer_4, correc
 }
 
 function loadQuestions() {
-  fetch('../back/admin.php?action=read')
+  fetch(`${rutaActual}admin.php?action=read`)
     .then(res => res.json())
     .then(data => {
       if (data.success) {
@@ -174,7 +178,7 @@ function editQuestion(id) {
 }
 
 function updateQuestion(id, question, answer_1, answer_2, answer_3, answer_4, correct_answer, imagen) {
-  fetch('../back/admin.php?action=update', {
+  fetch(`${rutaActual}admin.php?action=update`, {
     method: 'POST',
     headers: {'Content-Type': 'application/json'},
     body: JSON.stringify({ id, question, answer_1, answer_2, answer_3, answer_4, correct_answer, imagen })
@@ -199,7 +203,7 @@ function deleteQuestion(id) {
     return;
   }
 
-  fetch('../back/admin.php?action=delete', {
+  fetch(`${rutaActual}admin.php?action=delete`, {
     method: 'POST',
     headers: {'Content-Type': 'application/json'},
     body: JSON.stringify({ id })
