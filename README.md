@@ -63,4 +63,8 @@ En aquest projecte he utilitzat la branca principal (main) com a línia de desen
 El repositori compta actualment amb 10 commits, que reflecteixen el procés de creació i millora progressiva del projecte, des de la configuració inicial fins a les últimes correccions i ajustos.
 Amb una branca (PRODUCTION_CHANGES) on es feia els canvis per producció i els canvis finals necessaris, aquesta branca finalment va ser la definitiva i es la que esta actualment a la branca (main)
 
+I aqui es pot veure amb GitGraph la meva traçabilitat amb els commits y les branques
+<img width="1103" height="818" alt="image" src="https://github.com/user-attachments/assets/61bbedec-19dc-44c1-9e98-636bdabb0bbf" />
+
+
 Repositori: 👉 [P0_TestBanderas a GitHub](https://github.com/a23edstorcev/P0_TestBanderas)
