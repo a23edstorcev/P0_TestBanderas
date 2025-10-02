@@ -35,12 +35,12 @@ Tanmateix, gràcies a les recomanacions de l’eina, vaig poder identificar els 
 
 Abans: overview amb diversos problemes.
 
-<img width="700" height="500" alt="Captura de pantalla 2025-10-02 204218" src="https://github.com/user-attachments/assets/e084c639-1c5d-40f6-9863-cd8077f72ce2" />
+<img width="1500" height="806" alt="Captura de pantalla 2025-10-02 204218" src="https://github.com/user-attachments/assets/e084c639-1c5d-40f6-9863-cd8077f72ce2" />
 
 
 Després: overview millorat després de les correccions aplicades.
 
-<img width="1884" height="806" alt="Captura de pantalla 2025-10-02 221605" src="https://github.com/user-attachments/assets/cdf712f5-c7e8-4006-aab4-d8bddf127584" />
+<img width="1500" height="806" alt="Captura de pantalla 2025-10-02 221605" src="https://github.com/user-attachments/assets/cdf712f5-c7e8-4006-aab4-d8bddf127584" />
 
 
 
