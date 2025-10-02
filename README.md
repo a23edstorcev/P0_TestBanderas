@@ -50,7 +50,7 @@ Aquest projecte utilitza Vercel com a eina per al desplegament continu i el test
 A través de Vercel, puc validar els canvis de codi en un entorn real abans de publicar-los al domini definitiu. Això em permet comprovar que el projecte funciona correctament després de cada actualització i detectar possibles errors de forma ràpida.
 
 Es troba disponible a la següent URL:
-👉 p0-test-banderas.vercel.app
+👉 [p0-test-banderas.vercel.app](https://p0-test-banderas.vercel.app/front/juego.html)
 
 
 
