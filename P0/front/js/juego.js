@@ -36,7 +36,7 @@ let bienvenidaContainer = document.getElementById("mensajeBienvenida");
 /////////////////////////////////////////
 function inicializarEventListeners() {
   console.log(eventListenerAgregado);
-  if (eventListenerAgregado) return;
+  if (!eventListenerAgregado) {
     partidaContainer.addEventListener("click", function (e) {
     console.log("han clickado a " + e.target);
     let respuesta = e.target.getAttribute("resp");
@@ -46,15 +46,16 @@ function inicializarEventListeners() {
       let grupoName = e.target.getAttribute("name");
       let radios = document.querySelectorAll(`input[name="${grupoName}"]`);
 
-      radios.forEach(r => {
+      for(const r of radios) {
         r.style.backgroundColor = "";
         r.style.color = "";
-      });
+      };
 
       e.target.style.backgroundColor = "#28a745"; // verde
       e.target.style.color = "white";
     }
   })
+  }
   // listener para el inicio de sesión 
   sesionContainer.addEventListener("click", function (e) {
     let validName;
@@ -111,7 +112,7 @@ function inicializarEventListeners() {
         }
         PreguntaVisible(preguntaMostrada, estatDeLaPartida.preguntaActual);
         actualitzaMarcador();
-      }z
+      }
     } else if (e.target && e.target.id === "btnSiguiente") {
       if (estatDeLaPartida.preguntaActual < estatDeLaPartida.preguntas.length ) {
         if (estatDeLaPartida.respuestaSeleccionada !== null) {
@@ -200,10 +201,10 @@ function inicializarEventListeners() {
 /// FUNCION PARA BLOQUEAR LAS RESPUESTAS RESPONDIDAS
 ////////////////////////////////////////////////////
 function bloquearRespuestas() {
-  estatDeLaPartida.respuestasUsuari.forEach((respuesta, i) => {
+  for (const [i, respuesta] of estatDeLaPartida.respuestasUsuari.entries()) {
     if (respuesta !== null) {
       const botones = document.querySelectorAll(`input[preg="${i}"]`);
-      botones.forEach(btn => {
+      for(const btn of botones) {
         btn.disabled = true;
         btn.style.backgroundColor = "#ccc"; // gris
         btn.style.color = "#666"; // opcional, texto gris
@@ -211,9 +212,9 @@ function bloquearRespuestas() {
         if (btn.getAttribute("resp") === respuesta) {
         btn.checked = true;
         }
-      });
+      };
     }
-  });
+  };
 }
 
 
@@ -383,7 +384,9 @@ function BorrarPartida() {
 function guardarNombre() {
     const nombreInput = document.getElementById("nombreJugador");
     const nombre = nombreInput.value.trim();
-    if (!localStorage.getItem("nombreJugador")) {
+    if (localStorage.getItem("nombreJugador")) {
+      return true; 
+    } else {
       if (nombre === "") {
           alert("❌ Por favor, introduce tu nombre antes de continuar.");
           nombreInput.focus(); // Enfocar el input para que escriba
@@ -395,15 +398,13 @@ function guardarNombre() {
       
       console.log("✅ Nombre guardado:", nombre);
       return true; 
-    } else {
-      return true
     }
 }
 
 function verificarSesion() {
     const nombreGuardado = localStorage.getItem("nombreJugador");
     
-    if (!nombreGuardado) return;
+    if (nombreGuardado) {
         // Si hay nombre guardado, mostrar mensaje de bienvenida
         mensajeUser.innerHTML = `
             <div style="background-color: #d4edda; border: 1px solid #c3e6cb; padding: 10px; border-radius: 5px; margin-top: 10px;">
@@ -413,6 +414,9 @@ function verificarSesion() {
         `;
         // Ocultar el formulario inicial
         document.getElementById("nombreJugador").setAttribute("hidden", true);
+    } else {
+      return;
+    }
 }
 
 

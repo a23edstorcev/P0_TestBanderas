@@ -23,9 +23,10 @@ if ($action === 'getPreguntas') {
             'id' => $q['id'],
             'pregunta' => $q['question'],
             'respuestas' => [$q['answer_1'], $q['answer_2'], $q['answer_3'], $q['answer_4']],
-            'imagen' => $q['imagen'] ?? "" 
+            'imagen' => $q['imagen'] ?? ""
         ];
     }
+    unset($q);
 
     echo json_encode($preguntasJSON);
     exit;
@@ -33,4 +34,4 @@ if ($action === 'getPreguntas') {
 
 http_response_code(400);
 echo json_encode(['error' => 'Acción no válida']);
-?>
+

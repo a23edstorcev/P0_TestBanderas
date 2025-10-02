@@ -4,11 +4,12 @@ header('Content-Type: application/json');
 
 require_once "queries.php";
 
+$phpInput = 'php://input';
 $action = $_GET['action'] ?? '';
 
 // CREATE - Crear pregunta
 if ($action === 'create') {
-    $input = file_get_contents('php://input');
+    $input = file_get_contents($phpInput);
     $data = json_decode($input, true);
     
     $question = $data['question'] ?? '';
@@ -57,7 +58,7 @@ if ($action === 'readOne') {
 
 // UPDATE - Actualizar pregunta
 if ($action === 'update') {
-    $input = file_get_contents('php://input');
+    $input = file_get_contents($phpInput);
     $data = json_decode($input, true);
     
     $id = $data['id'] ?? 0;
@@ -69,7 +70,7 @@ if ($action === 'update') {
     $correct_answer = $data['correct_answer'] ?? 1;
     $imagen = $data['imagen'] ?? null;
     
-    if ($id <= 0 || empty($question) || empty($answer_1) || empty($answer_2) || empty($answer_3) 
+    if ($id <= 0 || empty($question) || empty($answer_1) || empty($answer_2) || empty($answer_3)
         || empty($answer_4) || empty($correct_answer) || empty($imagen)) {
         echo json_encode(['success' => false, 'message' => 'Todos los campos son obligatorios']);
         exit;
@@ -87,7 +88,7 @@ if ($action === 'update') {
 
 // DELETE - Eliminar pregunta
 if ($action === 'delete') {
-    $input = file_get_contents('php://input');
+    $input = file_get_contents($phpInput);
     $data = json_decode($input, true);
     
     $id = $data['id'] ?? $_GET['id'] ?? 0;
@@ -104,4 +105,3 @@ if ($action === 'delete') {
 
 http_response_code(400);
 echo json_encode(['error' => 'Acción no válida']);
-?>

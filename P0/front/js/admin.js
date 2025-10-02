@@ -47,7 +47,7 @@ function inicializarEventListeners() {
     const answer_2 = document.getElementById('answer_2').value.trim();
     const answer_3 = document.getElementById('answer_3').value.trim();
     const answer_4 = document.getElementById('answer_4').value.trim();
-    const correct_answer = parseInt(document.getElementById('correct_answer').value);
+    const correct_answer = Number.parseInt(document.getElementById('correct_answer').value);
     const imagen = document.getElementById('imagen').value.trim();
 
     if (!question || !answer_1 || !answer_2 || !answer_3 || !answer_4 || correct_answer < 1 || correct_answer > 4 || !isValidURL(imagen)) {
@@ -88,7 +88,7 @@ function inicializarEventListeners() {
 
   eventListenerAgregado = true;
 }
-Ç
+
 
 //////////////////////////////////////////////////
 // FUNCION QUE CREA LAS PREGUNTAS 
@@ -159,7 +159,7 @@ function displayQuestions() {
     </thead>
     <tbody>`;
 
-  preguntas.forEach(q => {
+  for(const q of preguntas) {
     const answers = `1: ${q.answer_1}<br>2: ${q.answer_2}<br>3: ${q.answer_3}<br>4: ${q.answer_4}`;
     html += `
       <tr>
@@ -173,7 +173,7 @@ function displayQuestions() {
           <button class="btn-danger" data-action="delete" data-id="${q.id}">Eliminar</button>
         </td>
       </tr>`;
-  });
+  };
 
   html += '</tbody></table>';
   questionsList.innerHTML = html;

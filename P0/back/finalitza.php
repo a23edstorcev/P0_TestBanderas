@@ -16,11 +16,8 @@ if ($action === 'finalitza') {
     $correctas = 0;
 
     for ($i = 0; $i < $total; $i++) {
-        if (isset($RandPreguntas[$i]) && isset($respuestas[$i])) {
-            if (($RandPreguntas[$i]['correct_answer'] - 1) == $respuestas[$i]) {
+        if (isset($RandPreguntas[$i]) && isset($respuestas[$i]) && ($RandPreguntas[$i]['correct_answer'] - 1) == $respuestas[$i]) {
                 $correctas++;
-                
-            }
         }
     }
 
@@ -30,4 +27,3 @@ if ($action === 'finalitza') {
     ]);
     exit;
 }
-?>

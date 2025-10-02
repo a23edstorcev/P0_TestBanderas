@@ -28,7 +28,7 @@ function createQuestion($question, $answer_1, $answer_2, $answer_3, $answer_4, $
     
     if ($stmt->execute()) {
         $result = [
-            'success' => true, 
+            'success' => true,
             'message' => 'Pregunta creada exitosamente',
             'id' => $conn->insert_id
         ];
@@ -82,7 +82,7 @@ function getQuestionById($id) {
 function updateQuestion($id, $question, $answer_1, $answer_2, $answer_3, $answer_4, $correct_answer, $imagen) {
     global $conn;
     
-    $stmt = $conn->prepare("UPDATE preguntas SET question = ?, answer_1 = ?, answer_2 = ?, answer_3 = ?, answer_4 = ?, 
+    $stmt = $conn->prepare("UPDATE preguntas SET question = ?, answer_1 = ?, answer_2 = ?, answer_3 = ?, answer_4 = ?,
     correct_answer = ?, imagen = ? WHERE id = ?");
     $stmt->bind_param("sssssisi", $question, $answer_1, $answer_2, $answer_3, $answer_4, $correct_answer, $imagen, $id);
     
@@ -120,4 +120,4 @@ function deleteQuestion($id) {
     $stmt->close();
     return $result;
 }
-?>
+
