@@ -35,12 +35,12 @@ Tanmateix, gràcies a les recomanacions de l’eina, vaig poder identificar els 
 
 Abans: overview amb diversos problemes.
 
-<img width="1500" height="806" alt="Captura de pantalla 2025-10-02 204218" src="https://github.com/user-attachments/assets/e084c639-1c5d-40f6-9863-cd8077f72ce2" />
+<img width="1100" height="806" alt="Captura de pantalla 2025-10-02 204218" src="https://github.com/user-attachments/assets/e084c639-1c5d-40f6-9863-cd8077f72ce2" />
 
 
 Després: overview millorat després de les correccions aplicades.
 
-<img width="1500" height="806" alt="Captura de pantalla 2025-10-02 221605" src="https://github.com/user-attachments/assets/cdf712f5-c7e8-4006-aab4-d8bddf127584" />
+<img width="1100" height="806" alt="Captura de pantalla 2025-10-02 221605" src="https://github.com/user-attachments/assets/cdf712f5-c7e8-4006-aab4-d8bddf127584" />
 
 
 
@@ -51,3 +51,16 @@ A través de Vercel, puc validar els canvis de codi en un entorn real abans de p
 
 Es troba disponible a la següent URL:
 👉 p0-test-banderas.vercel.app
+
+
+
+🌱 Git
+
+El control de versions d’aquest projecte s’ha realitzat amb Git, fent servir GitHub com a repositori remot.
+L’ús de Git m’ha permès portar un seguiment de l’evolució del projecte, registrar els canvis realitzats i disposar d’un historial clar de les modificacions del codi.
+
+En aquest projecte he utilitzat la branca principal (main) com a línia de desenvolupament, on he anat integrant els diferents canvis.
+El repositori compta actualment amb 10 commits, que reflecteixen el procés de creació i millora progressiva del projecte, des de la configuració inicial fins a les últimes correccions i ajustos.
+Amb una branca (PRODUCTION_CHANGES) on es feia els canvis per producció i els canvis finals necessaris, aquesta branca finalment va ser la definitiva i es la que esta actualment a la branca (main)
+
+Repositori: 👉 P0_TestBanderas a GitHub
