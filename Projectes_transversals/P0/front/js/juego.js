@@ -1,6 +1,7 @@
 let rutaPRODback = "/P0/back/";
-// let rutaLOCAL =
+let rutaLOCAL = "../back/";
 let rutaActual = rutaPRODback // ESTA VARIBLE SE LE ASIGNARA LA RUTA QUE SE QUIERA USAR Y ASI NO HAY QUE CAMBIAR TODAS UNA A UNA
+
 // VARIBALES DEL TEMPORIZADOR
 let tiempo = 30;
 let tiempoParaResponder = tiempo; // en segundos

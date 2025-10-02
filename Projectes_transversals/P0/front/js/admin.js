@@ -1,5 +1,5 @@
 let rutaPRODback = "/P0/back/";
-// let rutaLOCAL =
+let rutaLOCAL = "../back/";
 let rutaActual = rutaPRODback // ESTA VARIBLE SE LE ASIGNARA LA RUTA QUE SE QUIERA USAR Y ASI NO HAY QUE CAMBIAR TODAS UNA A UNA
 
 const container = document.getElementById('admin-container');
@@ -13,8 +13,13 @@ let preguntas = [];
 let editMode = false;
 let eventListenerAgregado = false;
 
-// Cargar preguntas al inicio
+
 loadQuestions();
+
+
+//////////////////////////////////////////////////
+// FUNCION PARA QUE COMPRUEBE QUE LA IMAGEN SEA UNA URL VALIDA
+//////////////////////////////////////////////////
 
 function isValidURL(urlString) {
   try {
@@ -25,7 +30,12 @@ function isValidURL(urlString) {
   }
 }
 
-// ✅ INICIALIZAR TODOS LOS EVENT LISTENERS
+
+
+//////////////////////////////////////////////////
+// LISTENERS DE LA PARTE DE ADMIN
+//////////////////////////////////////////////////
+
 function inicializarEventListeners() {
   if (eventListenerAgregado) return;
 
@@ -78,6 +88,11 @@ function inicializarEventListeners() {
 
   eventListenerAgregado = true;
 }
+Ç
+
+//////////////////////////////////////////////////
+// FUNCION QUE CREA LAS PREGUNTAS 
+//////////////////////////////////////////////////
 
 function createQuestion(question, answer_1, answer_2, answer_3, answer_4, correct_answer, imagen) {
   fetch(`${rutaActual}admin.php?action=create`, {
@@ -100,6 +115,11 @@ function createQuestion(question, answer_1, answer_2, answer_3, answer_4, correc
   });
 }
 
+
+//////////////////////////////////////////////////
+// FUNCION PARA VOLVER A CARGAR LAS PREGUNTAS
+//////////////////////////////////////////////////
+
 function loadQuestions() {
   fetch(`${rutaActual}admin.php?action=read`)
     .then(res => res.json())
@@ -115,6 +135,10 @@ function loadQuestions() {
       showMessage('Error cargando preguntas: ' + e.message, 'error');
     });
 }
+
+//////////////////////////////////////////////////
+// MOSTRAR TODAS LAS PREGUNTAS DE LA BASE DE DATOS
+//////////////////////////////////////////////////
 
 function displayQuestions() {
   if (preguntas.length === 0) {
@@ -177,6 +201,11 @@ function editQuestion(id) {
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
+
+//////////////////////////////////////////////////
+// ACTUALIZAR LAS PREGUNTAS 
+//////////////////////////////////////////////////
+
 function updateQuestion(id, question, answer_1, answer_2, answer_3, answer_4, correct_answer, imagen) {
   fetch(`${rutaActual}admin.php?action=update`, {
     method: 'POST',
@@ -222,6 +251,10 @@ function deleteQuestion(id) {
   });
 }
 
+//////////////////////////////////////////////////
+// RESETEAR EL FORM PARA DEJARLOS EN BLANCO
+//////////////////////////////////////////////////
+
 function resetForm() {
   document.getElementById('id').value = '';
   document.getElementById('question').value = '';
@@ -255,7 +288,9 @@ function showMessage(message, type) {
   }, 5000);
 }
 
-// ✅ INICIALIZAR AL CARGAR LA PÁGINA
+//////////////////////////////////////////////////
+// INCIALIZAR EVENT LISTENERS AL CARGAR LA PÁGINA
+//////////////////////////////////////////////////
 window.addEventListener('DOMContentLoaded', () => {
   inicializarEventListeners();
 });
