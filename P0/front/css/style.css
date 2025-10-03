@@ -509,3 +509,36 @@ button:active {
   outline: 3px solid var(--color-principal);
   outline-offset: 2px;
 }
+
+
+/* ============================================
+   DETALLE DE RESPUESTAS FINALES
+   ============================================ */
+#detalle-respuestas {
+  background: white; /* fondo blanco para destacar */
+  padding: 1.5rem;
+  border-radius: var(--radio-bordes);
+  box-shadow: var(--sombra-media);
+  margin-top: 2rem;
+  animation: fadeIn 0.6s ease;
+}
+
+#detalle-respuestas h4 {
+  margin-bottom: 1rem;
+  color: var(--color-secundario);
+  border-bottom: 2px solid var(--color-principal);
+  padding-bottom: 0.5rem;
+}
+
+.detalle-pregunta {
+  padding: 1rem;
+  margin-bottom: 1rem;
+  background: #f8f9fa; /* gris claro para cada pregunta */
+  border-radius: var(--radio-bordes);
+  box-shadow: var(--sombra-suave);
+}
+
+.detalle-pregunta p {
+  margin-bottom: 0.5rem;
+  color: var(--color-texto);
+}

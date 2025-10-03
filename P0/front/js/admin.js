@@ -1,6 +1,6 @@
 let rutaPRODback = "/P0/back/";
 let rutaLOCAL = "../back/";
-let rutaActual = rutaPRODback // ESTA VARIBLE SE LE ASIGNARA LA RUTA QUE SE QUIERA USAR Y ASI NO HAY QUE CAMBIAR TODAS UNA A UNA
+let rutaActual = rutaLOCAL // ESTA VARIBLE SE LE ASIGNARA LA RUTA QUE SE QUIERA USAR Y ASI NO HAY QUE CAMBIAR TODAS UNA A UNA
 
 const container = document.getElementById('admin-container');
 const saveBtn = document.getElementById('save-btn');
@@ -8,6 +8,8 @@ const cancelBtn = document.getElementById('cancel-btn');
 const refreshBtn = document.getElementById('refresh-btn');
 const formTitle = document.getElementById('form-title');
 const questionsList = document.getElementById('questions-list');
+const fileInput = document.getElementById('imagen');
+const fileNameSpan = document.querySelector('.file-name');
 
 let preguntas = [];
 let editMode = false;
@@ -49,16 +51,17 @@ function inicializarEventListeners() {
     const answer_4 = document.getElementById('answer_4').value.trim();
     const correct_answer = Number.parseInt(document.getElementById('correct_answer').value);
     const imagen = document.getElementById('imagen').value.trim();
+    const imagenFile = document.getElementById('imagen').files[0];
 
-    if (!question || !answer_1 || !answer_2 || !answer_3 || !answer_4 || correct_answer < 1 || correct_answer > 4 || !isValidURL(imagen)) {
+    if (!question || !answer_1 || !answer_2 || !answer_3 || !answer_4 || correct_answer < 1 || correct_answer > 4) {
       showMessage('Todos los campos son obligatorios y la URL debe ser válida', 'error');
       return;
     }
 
     if (editMode) {
-      updateQuestion(id, question, answer_1, answer_2, answer_3, answer_4, correct_answer, imagen);
+      updateQuestion(id, question, answer_1, answer_2, answer_3, answer_4, correct_answer, imagenFile);
     } else {
-      createQuestion(question, answer_1, answer_2, answer_3, answer_4, correct_answer, imagen);
+      createQuestion(question, answer_1, answer_2, answer_3, answer_4, correct_answer, imagenFile);
     }
   });
 
@@ -90,15 +93,36 @@ function inicializarEventListeners() {
 }
 
 
+////////////////////////////////////////////////////////
+// FUNCION PARA CAMBIAR LA VISTA DEL INPUT DE LA IMAGEN
+////////////////////////////////////////////////////////
+
+fileInput.addEventListener('change', function() {
+  if (this.files.length > 0) {
+    fileNameSpan.textContent = this.files[0].name;
+  } else {
+    fileNameSpan.textContent = 'Selecciona un archivo...';
+  }
+});
+
+
 //////////////////////////////////////////////////
 // FUNCION QUE CREA LAS PREGUNTAS 
 //////////////////////////////////////////////////
 
-function createQuestion(question, answer_1, answer_2, answer_3, answer_4, correct_answer, imagen) {
+function createQuestion(question, answer_1, answer_2, answer_3, answer_4, correct_answer, imagenFile) {
+  const formData = new FormData();
+  formData.append('question', question);
+  formData.append('answer_1', answer_1);
+  formData.append('answer_2', answer_2);
+  formData.append('answer_3', answer_3);
+  formData.append('answer_4', answer_4);
+  formData.append('correct_answer', correct_answer);
+  if (imagenFile) formData.append('imagen', imagenFile);
+
   fetch(`${rutaActual}admin.php?action=create`, {
     method: 'POST',
-    headers: {'Content-Type': 'application/json'},
-    body: JSON.stringify({ question, answer_1, answer_2, answer_3, answer_4, correct_answer, imagen })
+    body: formData
   })
   .then(res => res.json())
   .then(data => {
@@ -114,7 +138,6 @@ function createQuestion(question, answer_1, answer_2, answer_3, answer_4, correc
     showMessage('Error al crear pregunta: ' + e.message, 'error');
   });
 }
-
 
 //////////////////////////////////////////////////
 // FUNCION PARA VOLVER A CARGAR LAS PREGUNTAS
@@ -206,11 +229,27 @@ function editQuestion(id) {
 // ACTUALIZAR LAS PREGUNTAS 
 //////////////////////////////////////////////////
 
-function updateQuestion(id, question, answer_1, answer_2, answer_3, answer_4, correct_answer, imagen) {
+function updateQuestion(id, question, answer_1, answer_2, answer_3, answer_4, correct_answer, imagenFile) {
+  const formData = new FormData();
+  formData.append('id', id);
+  formData.append('question', question);
+  formData.append('answer_1', answer_1);
+  formData.append('answer_2', answer_2);
+  formData.append('answer_3', answer_3);
+  formData.append('answer_4', answer_4);
+  formData.append('correct_answer', correct_answer);
+
+  if (imagenFile) {
+    formData.append('imagen', imagenFile);
+  } else {
+    // si no seleccionan nueva imagen, enviamos la ruta actual para mantenerla
+    const currentImage = document.getElementById('imagen').getAttribute("data-current");
+    if (currentImage) formData.append('imagen_actual', currentImage);
+  }
+
   fetch(`${rutaActual}admin.php?action=update`, {
     method: 'POST',
-    headers: {'Content-Type': 'application/json'},
-    body: JSON.stringify({ id, question, answer_1, answer_2, answer_3, answer_4, correct_answer, imagen })
+    body: formData
   })
   .then(res => res.json())
   .then(data => {

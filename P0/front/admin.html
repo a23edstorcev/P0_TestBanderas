@@ -24,14 +24,22 @@
       <input type="text" id="answer_4" placeholder="Respuesta 4">
     </div>
     
-    <input type="text" id="imagen" placeholder="URL de la imagen (opcional)">
-    
     <select id="correct_answer">
       <option value="1">Resposta 1 es correcta</option>
       <option value="2">Resposta 2 es correcta</option>
       <option value="3">Resposta 3 es correcta</option>
       <option value="4">Resposta 4 es correcta</option>
     </select>
+
+    <br>
+    
+    <label for="imagen" class="input-label">Imagen:</label>
+    <div class="file-input-wrapper">
+      <input type="file" id="imagen" name="imagen" accept="image/*">
+      <span class="file-name">Selecciona un archivo...</span>
+    </div>
+
+    <br>
     
     <button id="save-btn" class="btn-primary">Guardar Pregunta</button>
     <button id="cancel-btn" class="btn-warning" style="display:none;">Cancelar</button>

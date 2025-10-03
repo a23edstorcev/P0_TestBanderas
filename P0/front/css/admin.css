@@ -101,3 +101,56 @@ th {
     grid-template-columns: 1fr 1fr;
     gap: 10px;
 }
+
+/* Contenedor para el input file */
+.file-input-wrapper {
+  position: relative;
+  width: 100%;
+  max-width: 400px;
+  font-family: sans-serif;
+}
+
+/* Input file real, oculto */
+.file-input-wrapper input[type="file"] {
+  width: 100%;
+  height: 40px;
+  opacity: 0;
+  position: absolute;
+  left: 0;
+  top: 0;
+  cursor: pointer;
+}
+
+/* Texto visible del input */
+.file-input-wrapper .file-name {
+  display: block;
+  padding: 10px;
+  background-color: #f9f9f9;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  color: #555;
+  pointer-events: none;
+  transition: background-color 0.2s, border-color 0.2s;
+}
+
+/* Hover del contenedor */
+.file-input-wrapper:hover .file-name {
+  background-color: #f0f0f0;
+  border-color: #999;
+}
+
+/* Cuando se selecciona un archivo */
+.file-input-wrapper input[type="file"]:valid + .file-name::after {
+  content: attr(data-file-name);
+}
+
+/* Estilo simple para labels */
+label {
+  display: block;
+  font-weight: 500;
+  margin-bottom: 5px;
+  color: #333;
+  font-size: 14px;
+  letter-spacing: 0.5px;
+}
+

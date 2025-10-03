@@ -1,6 +1,6 @@
 let rutaPRODback = "/P0/back/";
 let rutaLOCAL = "../back/";
-let rutaActual = rutaPRODback // ESTA VARIBLE SE LE ASIGNARA LA RUTA QUE SE QUIERA USAR Y ASI NO HAY QUE CAMBIAR TODAS UNA A UNA
+let rutaActual = rutaLOCAL // ESTA VARIBLE SE LE ASIGNARA LA RUTA QUE SE QUIERA USAR Y ASI NO HAY QUE CAMBIAR TODAS UNA A UNA
 
 // VARIBALES DEL TEMPORIZADOR
 let tiempo = 30;
@@ -136,6 +136,8 @@ function inicializarEventListeners() {
       // Detener temporizador si está corriendo
       temporizadorCorriendo = false;
       tiempoParaResponder = tiempo; // reiniciar tiempo
+      document.getElementById("detalle-respuestas").setAttribute("hidden", true);
+
 
       estatDeLaPartida = {
         preguntas: [],
@@ -166,6 +168,7 @@ function inicializarEventListeners() {
     if (event.target && event.target.id === "btnPartidaNueva") {
       temporizadorCorriendo = false;
       tiempoParaResponder = tiempo; // reiniciar tiempo
+      document.getElementById("detalle-respuestas").setAttribute("hidden", true);
 
       estatDeLaPartida = {
         preguntas: [],
@@ -317,6 +320,7 @@ function mostrarFinal() {
       document.getElementById("botonesOpciones").removeAttribute("hidden");
 
       partidaContainer.innerHTML = stringhtml;
+      mostrarDetalleRespuestas();
     })
     .catch((e) => {
       partidaContainer.innerHTML = `<p>Error cargando respustas: ${e.message}</p>`;
@@ -457,6 +461,48 @@ function actualitzaMarcador(mostrarResultados = false) {
   marcadorContainer.innerHTML = htmlString;
   console.log(estatDeLaPartida);
 }
+
+
+///////////////////////////////////////////////////////////////
+// FUNCION PARA MOSTRAR LOS DETALLES DESPUES DE LA PARTIDA
+//////////////////////////////////////////////////////////////
+
+function mostrarDetalleRespuestas() {
+  const contenedorDetalle = document.getElementById("detalle-respuestas");
+  contenedorDetalle.removeAttribute("hidden"); // se muestra solo al final
+  contenedorDetalle.innerHTML = "<h4>Detalle de tus respuestas:</h4>";
+
+  estatDeLaPartida.preguntas.forEach((pregunta, i) => {
+    const respElegida = estatDeLaPartida.respuestasUsuari[i];
+    let simbolo = "";
+    let textoRespuesta = "";
+
+    if (respElegida === null) {
+      simbolo = "⚪ No respondida";
+      textoRespuesta = "No respondida";
+    } else if (respElegida == pregunta.correct_answer) {
+      simbolo = "✔️ Correcta";
+      textoRespuesta = pregunta.respuestas[respElegida];
+    } else {
+      simbolo = "❌ Incorrecta";
+      textoRespuesta = pregunta.respuestas[respElegida];
+    }
+
+    contenedorDetalle.innerHTML += `
+      <div class="detalle-pregunta">
+        <p><strong>P${i+1}: ${pregunta.pregunta}</strong></p>
+        <p>Tu respuesta: ${textoRespuesta} ${simbolo}</p>
+      </div>
+    `;
+  });
+}
+
+
+
+
+///////////////////////////////////////////////////////////////
+// FUNCION QUE TE LLEVA A LA PREGUNTA QUE SELECCIONES
+//////////////////////////////////////////////////////////////
 
 window.irAPregunta = function(numeroPregunta) {
   if (numeroPregunta >= 0 && numeroPregunta < estatDeLaPartida.preguntas.length) {
