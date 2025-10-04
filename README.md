@@ -1,3 +1,6 @@
+[JOC DE PREGUNTES ](http://projecte0.daw.inspedralbes.cat/P0/front/juego.html)
+
+
 🧩 Objectiu de l'Aplicació
 
 Aquesta aplicació té com a objectiu principal facilitar l’aprenentatge interactiu de les banderes dels països del món mitjançant un joc senzill i dinàmic. Està pensada com una primera pràctica dins del cicle de DAW, de manera que no busca complexitat tècnica màxima, sinó que serveix per familiaritzar-se amb el desenvolupament web i entendre millor el funcionament de la programació front-end i back-end.
