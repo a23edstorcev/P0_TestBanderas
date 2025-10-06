@@ -1,4 +1,5 @@
 [JOC DE PREGUNTES ](http://projecte0.daw.inspedralbes.cat/P0/front/juego.html)
+
 [JOC DE PREGUNTES ADMIN](http://projecte0.daw.inspedralbes.cat/P0/front/admin.html)
 
 
