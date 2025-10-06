@@ -48,6 +48,14 @@ Després: overview millorat després de les correccions aplicades.
 
 --------
 
+📗 Penpot 
+
+[link del penpot](https://design.penpot.app/#/workspace?team-id=1ab1fa36-da8e-809d-8004-fb0d749a4a14&file-id=6ac113cd-51c8-8126-8006-e62e31aed019&page-id=6ac113cd-51c8-8126-8006-e62e31aed01a&layout=layers)
+
+
+---------
+
+
 🚀 Vercel
 
 Aquest projecte utilitza Vercel com a eina per al desplegament continu i el testeig de l’aplicació.
